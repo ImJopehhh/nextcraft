@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 export default function AdminLogin() {
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -21,7 +22,7 @@ export default function AdminLogin() {
             const res = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ identifier, password }),
+                body: JSON.stringify({ identifier, password, rememberMe }),
             });
 
             const data = await res.json();
@@ -92,7 +93,7 @@ export default function AdminLogin() {
                         <div className="space-y-2">
                             <div className="flex justify-between px-1">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Password</label>
-                                <a href="#" className="text-xs font-bold text-blue-500 hover:text-blue-400">Lupa?</a>
+                                <a href="#" className="text-xs font-bold text-blue-500 hover:text-blue-400 transition-colors">Lupa?</a>
                             </div>
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
@@ -105,6 +106,19 @@ export default function AdminLogin() {
                                     required
                                 />
                             </div>
+                        </div>
+
+                        <div className="flex items-center px-1">
+                            <label className="flex items-center gap-3 cursor-pointer group">
+                                <div
+                                    className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${rememberMe ? 'bg-blue-600 border-blue-600 shadow-lg shadow-blue-500/20' : 'border-blue-900/30 bg-blue-900/10 group-hover:border-blue-500/50'
+                                        }`}
+                                    onClick={() => setRememberMe(!rememberMe)}
+                                >
+                                    {rememberMe && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-2.5 h-2.5 bg-white rounded-full" />}
+                                </div>
+                                <span className="text-sm text-slate-400 font-medium group-hover:text-slate-300 transition-colors">Ingat saya (7 hari)</span>
+                            </label>
                         </div>
 
                         <button

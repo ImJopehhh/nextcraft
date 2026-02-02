@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
+// Generate a random secret on every server start to make sessions volatile
+const VOLATILE_SECRET = process.env.NODE_ENV === "production"
+    ? Math.random().toString(36).substring(2) + Date.now().toString(36)
+    : "dev_volatile_secret_2026"; // Consistent in dev for hot-reloading stability
 
 export type JWTPayload = {
     id: string;
@@ -10,14 +13,18 @@ export type JWTPayload = {
     role: string;
 };
 
-export async function createSession(payload: JWTPayload) {
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
+export async function createSession(payload: JWTPayload, rememberMe: boolean = false) {
+    const expiresIn = (rememberMe ? "7d" : "1d") as jwt.SignOptions["expiresIn"];
+    const maxAge = rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
+
+    const token = jwt.sign(payload, VOLATILE_SECRET, { expiresIn });
+
     const cookieStore = await cookies();
     cookieStore.set("session", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 60 * 60 * 24, // 1 day
+        maxAge: maxAge,
         path: "/",
     });
 }
@@ -28,7 +35,7 @@ export async function getSession(): Promise<JWTPayload | null> {
     if (!token) return null;
 
     try {
-        return jwt.verify(token, JWT_SECRET) as JWTPayload;
+        return jwt.verify(token, VOLATILE_SECRET) as JWTPayload;
     } catch (err) {
         return null;
     }
