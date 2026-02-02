@@ -15,10 +15,10 @@ export default function LoadingScreen() {
                     setTimeout(() => setLoading(false), 200);
                     return 100;
                 }
-                const diff = Math.random() * 25; // Faster increment
+                const diff = Math.random() * 15; // Faster increment
                 return Math.min(oldProgress + diff, 100);
             });
-        }, 60); // Faster interval
+        }, 15); // Faster interval
 
         return () => clearInterval(timer);
     }, []);
@@ -39,24 +39,19 @@ export default function LoadingScreen() {
                         className="relative flex flex-col items-center"
                     >
                         {/* Logo placeholder - replace with actual logo */}
-                        <div className="mb-8 flex items-center gap-2">
-                            <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-gradient-to-br from-blue-600 to-indigo-800 shadow-[0_0_30px_rgba(37,99,235,0.4)]">
-                                <div className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-white">
-                                    N
-                                </div>
-                                <motion.div
-                                    animate={{
-                                        left: ["-100%", "200%"],
-                                    }}
-                                    transition={{
-                                        duration: 1.5,
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                    }}
-                                    className="absolute top-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                        <div className="mb-8 flex items-center gap-4">
+                            <motion.div
+                                initial={{ scale: 0.8 }}
+                                animate={{ scale: 1 }}
+                                className="relative h-20 w-20 overflow-hidden rounded-2xl shadow-[0_0_40px_rgba(37,99,235,0.3)] border border-blue-500/20"
+                            >
+                                <img
+                                    src="/assets/nextcraftlogo.jpg"
+                                    alt="NextCraft Logo"
+                                    className="w-full h-full object-cover"
                                 />
-                            </div>
-                            <h1 className="text-4xl font-black tracking-tighter text-white">
+                            </motion.div>
+                            <h1 className="text-5xl font-black tracking-tighter text-white">
                                 NEXT<span className="text-blue-500">CRAFT</span>
                             </h1>
                         </div>

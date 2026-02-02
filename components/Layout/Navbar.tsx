@@ -26,18 +26,18 @@ export default function Navbar() {
     return (
         <nav
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-                    ? "bg-[#050b18]/80 backdrop-blur-md py-4 border-b border-blue-900/30"
-                    : "bg-transparent py-6"
+                ? "bg-[#050b18]/80 backdrop-blur-md py-4 border-b border-blue-900/30"
+                : "bg-transparent py-6"
                 }`}
         >
             <div className="container mx-auto px-6 flex items-center justify-between">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center gap-2 cursor-pointer"
+                    className="flex items-center gap-3 cursor-pointer"
                 >
-                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-900/40">
-                        N
+                    <div className="h-10 w-10 rounded-lg overflow-hidden border border-blue-500/20 shadow-lg shadow-blue-900/20">
+                        <img src="/assets/nextcraftlogo.jpg" alt="Logo" className="w-full h-full object-cover" />
                     </div>
                     <span className="text-xl font-black text-white tracking-tighter">
                         NEXT<span className="text-blue-500">CRAFT</span>

@@ -9,8 +9,10 @@ export default function Footer() {
             <div className="container mx-auto px-6">
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
                     <div className="max-w-xs">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center font-bold text-white">N</div>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="h-10 w-10 rounded-lg overflow-hidden border border-blue-900/30">
+                                <img src="/assets/nextcraftlogo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                            </div>
                             <span className="text-xl font-black text-white tracking-tighter">NEXT<span className="text-blue-500">CRAFT</span></span>
                         </div>
                         <p className="text-slate-500 text-sm leading-relaxed mb-8">
