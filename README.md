@@ -1,6 +1,8 @@
 # 🚀 NextCraft
 
-> **⚠️ IMPORTANT: This project is currently under active development and is NOT ready for production use.**
+> [!WARNING]
+> **This project is currently under active development and is NOT ready for production use.**
+> Do not deploy this application in a production environment without proper security audits and comprehensive testing.
 
 A modern, full-stack web application built with Next.js 16, featuring a professional admin dashboard, secure authentication system, and a stunning guest-facing interface.
 
@@ -208,5 +210,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
   <p>Made with ❤️ and ☕</p>
-  <p><strong>⚠️ Remember: This is a development project. Do not use in production without proper security audits and testing.</strong></p>
+  
+> [!CAUTION]
+> **Remember: This is a development project. Do not use in production without proper security audits and testing.**
 </div>
