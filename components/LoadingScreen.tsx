@@ -1,0 +1,90 @@
+"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+
+export default function LoadingScreen() {
+    const [loading, setLoading] = useState(true);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setProgress((oldProgress) => {
+                if (oldProgress === 100) {
+                    clearInterval(timer);
+                    setTimeout(() => setLoading(false), 500);
+                    return 100;
+                }
+                const diff = Math.random() * 10;
+                return Math.min(oldProgress + diff, 100);
+            });
+        }, 150);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    return (
+        <AnimatePresence>
+            {loading && (
+                <motion.div
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050b18]"
+                >
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="relative flex flex-col items-center"
+                    >
+                        {/* Logo placeholder - replace with actual logo */}
+                        <div className="mb-8 flex items-center gap-2">
+                            <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-gradient-to-br from-blue-600 to-indigo-800 shadow-[0_0_30px_rgba(37,99,235,0.4)]">
+                                <div className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-white">
+                                    N
+                                </div>
+                                <motion.div
+                                    animate={{
+                                        left: ["-100%", "200%"],
+                                    }}
+                                    transition={{
+                                        duration: 1.5,
+                                        repeat: Infinity,
+                                        ease: "linear",
+                                    }}
+                                    className="absolute top-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                                />
+                            </div>
+                            <h1 className="text-4xl font-black tracking-tighter text-white">
+                                NEXT<span className="text-blue-500">CRAFT</span>
+                            </h1>
+                        </div>
+
+                        <div className="w-64">
+                            <div className="mb-2 flex justify-between text-xs font-semibold uppercase tracking-widest text-blue-400/60">
+                                <span>Initializing</span>
+                                <span>{Math.round(progress)}%</span>
+                            </div>
+                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-blue-900/20 backdrop-blur-sm">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${progress}%` }}
+                                    className="h-full bg-gradient-to-r from-blue-600 to-indigo-500 shadow-[0_0_15px_rgba(37,99,235,0.6)]"
+                                />
+                            </div>
+                        </div>
+
+                        <motion.p
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="mt-6 text-sm italic text-slate-500"
+                        >
+                            Crafting your experience...
+                        </motion.p>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+}

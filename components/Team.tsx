@@ -1,0 +1,76 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Github, Twitter, Linkedin } from "lucide-react";
+
+const team = [
+    {
+        name: "Alex Johnson",
+        role: "CEO & Founder",
+        image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400",
+    },
+    {
+        name: "Sarah Chen",
+        role: "Lead Designer",
+        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
+    },
+    {
+        name: "Marcus Thorne",
+        role: "CTO / Backend Expert",
+        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400",
+    },
+    {
+        name: "Elena Rodriguez",
+        role: "Frontend Specialist",
+        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400",
+    },
+];
+
+export default function Team() {
+    return (
+        <section id="team" className="py-24 bg-[#050b18]">
+            <div className="container mx-auto px-6 text-center mb-16">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <h2 className="text-blue-500 font-bold uppercase tracking-[0.2em] text-sm mb-4">Our Team</h2>
+                    <h3 className="text-4xl md:text-5xl font-black text-white mb-6">The Minds Behind</h3>
+                    <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                        Sekumpulan profesional berdedikasi tinggi yang berkomitmen untuk memberikan hasil terbaik bagi setiap klien.
+                    </p>
+                </motion.div>
+            </div>
+
+            <div className="container mx-auto px-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {team.map((member, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: i * 0.1 }}
+                        className="group relative overflow-hidden rounded-3xl bg-blue-950/20 border border-blue-900/30 p-4 hover:border-blue-500/40 transition-all"
+                    >
+                        <div className="h-64 rounded-2xl overflow-hidden mb-6 relative">
+                            <img
+                                src={member.image}
+                                alt={member.name}
+                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
+                            />
+                            <div className="absolute inset-x-0 bottom-4 flex justify-center gap-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                                <a href="#" className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-500 shadow-xl"><Github size={18} /></a>
+                                <a href="#" className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-500 shadow-xl"><Linkedin size={18} /></a>
+                                <a href="#" className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-500 shadow-xl"><Twitter size={18} /></a>
+                            </div>
+                        </div>
+                        <h4 className="text-xl font-bold text-white mb-1">{member.name}</h4>
+                        <p className="text-blue-500 text-sm font-semibold">{member.role}</p>
+                    </motion.div>
+                ))}
+            </div>
+        </section>
+    );
+}
