@@ -3,22 +3,33 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
+// Keep track of loading state at the module level (persists as long as the page isn't hard-reloaded)
+let hasShownLoading = false;
+
 export default function LoadingScreen() {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!hasShownLoading);
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
+        if (hasShownLoading) {
+            setLoading(false);
+            return;
+        }
+
         const timer = setInterval(() => {
             setProgress((oldProgress) => {
                 if (oldProgress === 100) {
                     clearInterval(timer);
-                    setTimeout(() => setLoading(false), 200);
+                    setTimeout(() => {
+                        setLoading(false);
+                        hasShownLoading = true;
+                    }, 200);
                     return 100;
                 }
-                const diff = Math.random() * 15; // Faster increment
+                const diff = Math.random() * 5; // Faster increment
                 return Math.min(oldProgress + diff, 100);
             });
-        }, 15); // Faster interval
+        }, 3); // Faster interval
 
         return () => clearInterval(timer);
     }, []);
