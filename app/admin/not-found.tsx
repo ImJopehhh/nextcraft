@@ -16,9 +16,9 @@ export default function AdminNotFound() {
                     <FileQuestion size={48} className="text-blue-500" />
                 </div>
 
-                <h1 className="text-4xl font-bold text-white tracking-tight">Halaman Tidak Ditemukan</h1>
+                <h1 className="text-4xl font-bold text-white tracking-tight">Halaman Tidak Ditemukan (not-found-admin)</h1>
                 <p className="text-slate-400 max-w-md mx-auto">
-                    Maaf, halaman yang Anda cari di dalam Admin Control Panel tidak tersedia atau telah dipindahkan.
+                    Maaf, halaman admin yang Anda cari tidak tersedia. (Panel Kendali)
                 </p>
 
                 <div className="flex justify-center pt-4">

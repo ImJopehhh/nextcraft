@@ -32,9 +32,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const router = useRouter();
 
     useEffect(() => {
-        // In a real app, we'd fetch the user session from an API or pass it from a server component
-        // For this UI demo, we'll try to get basic info if possible or use placeholders
-        // getSession() is async and server-side, so we'd normally use a context or fetch.
         const checkSession = async () => {
             try {
                 const res = await fetch("/api/auth/me");
@@ -53,6 +50,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         router.refresh();
     };
 
+    // Helper to get active page name
+    const activePage = navItems.find(item => item.href === pathname)?.name || "Dashboard";
+
     // If we are on the login page, don't show the dashboard layout
     if (pathname === "/admin/login") return <>{children}</>;
 
@@ -60,19 +60,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="min-h-screen bg-[#020617] text-slate-200 flex">
             {/* Sidebar */}
             <motion.aside
-                animate={{ width: isSidebarOpen ? 280 : 80 }}
-                className="fixed left-0 top-0 bottom-0 bg-[#050b18] border-r border-blue-900/20 z-40 hidden md:flex flex-col"
+                animate={{ width: isSidebarOpen ? 260 : 80 }}
+                className="fixed left-0 top-0 bottom-0 bg-[#050b18] border-r border-blue-900/10 z-50 hidden md:flex flex-col"
             >
                 <div className="p-6 flex items-center gap-3">
-                    <div className="h-10 w-10 shrink-0 rounded-lg overflow-hidden border border-blue-900/30">
+                    <div className="h-9 w-9 shrink-0 rounded-lg overflow-hidden border border-blue-500/20">
                         <img src="/assets/nextcraftlogo.jpg" alt="Logo" className="w-full h-full object-cover" />
                     </div>
                     {isSidebarOpen && (
-                        <span className="text-xl font-black text-white tracking-tighter">NEXT<span className="text-blue-500">CP</span></span>
+                        <span className="text-lg font-black text-white tracking-tighter">NEXT<span className="text-blue-500">CRAFT</span></span>
                     )}
                 </div>
 
-                <nav className="flex-1 px-4 mt-4 space-y-2">
+                <nav className="flex-1 px-3 mt-4 space-y-1">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
                         const hasAccess = !user || item.roles.includes(user.role);
@@ -82,59 +82,87 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all group ${isActive
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                                    : "text-slate-500 hover:bg-blue-900/10 hover:text-slate-200"
+                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group ${isActive
+                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+                                    : "text-slate-500 hover:bg-white/5 hover:text-slate-200"
                                     }`}
                             >
                                 <div className={`${isActive ? "text-white" : "group-hover:text-blue-400"}`}>
                                     {item.icon}
                                 </div>
                                 {isSidebarOpen && (
-                                    <span className="font-semibold text-sm tracking-wide">{item.name}</span>
-                                )}
-                                {isSidebarOpen && isActive && (
-                                    <ChevronRight size={16} className="ml-auto opacity-50" />
+                                    <span className="font-bold text-sm">{item.name}</span>
                                 )}
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-blue-900/10 mb-4">
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-4 w-full px-4 py-3.5 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all font-semibold text-sm"
-                    >
-                        <div className="shrink-0"><X size={20} /></div>
-                        {isSidebarOpen && <span>Keluar Panel</span>}
-                    </button>
+                <div className="p-4 mt-auto">
+                    <div className={`bg-blue-900/10 border border-blue-900/20 rounded-2xl p-4 transition-all ${!isSidebarOpen && "opacity-0 invisible"}`}>
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white">
+                                NC
+                            </div>
+                            <div className="overflow-hidden">
+                                <p className="text-xs font-bold text-white truncate">NextCraft v1.0</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Standard Edition</p>
+                            </div>
+                        </div>
+                        <div className="h-1 bg-blue-900/20 rounded-full overflow-hidden">
+                            <div className="h-full w-2/3 bg-blue-600 rounded-full" />
+                        </div>
+                    </div>
                 </div>
             </motion.aside>
 
             {/* Main Content Area */}
-            <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "md:ml-[280px]" : "md:ml-[80px]"}`}>
-                {/* Header */}
-                <header className="h-20 bg-[#050b18]/50 backdrop-blur-md border-b border-blue-900/10 flex items-center justify-between px-8 sticky top-0 z-30">
-                    <button
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className="p-2 hover:bg-blue-900/10 rounded-xl transition-all text-slate-400"
-                    >
-                        {isSidebarOpen ? <Menu size={20} /> : <Menu size={20} />}
-                    </button>
+            <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "md:ml-[260px]" : "md:ml-[80px]"}`}>
+                {/* Header - "Kotak Panjang" Style */}
+                <div className="p-6 sticky top-0 z-40">
+                    <header className="h-16 bg-[#050b18]/80 backdrop-blur-xl border border-blue-900/20 rounded-2xl flex items-center justify-between px-6 shadow-2xl">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                className="p-2 hover:bg-white/5 rounded-lg transition-all text-slate-400 flex md:hidden"
+                            >
+                                <Menu size={18} />
+                            </button>
 
-                    <div className="flex items-center gap-6">
-                        <div className="hidden sm:flex flex-col items-end">
-                            <span className="text-sm font-bold text-white leading-none capitalize">{user?.username || "Admin"}</span>
-                            <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest mt-1">{user?.role || "Manager"}</span>
+                            <div className="flex items-center gap-3">
+                                <div className="w-1 h-6 bg-blue-600 rounded-full hidden sm:block" />
+                                <h2 className="text-lg font-black text-white tracking-tight">{activePage}</h2>
+                            </div>
                         </div>
-                        <div className="h-10 w-10 rounded-full bg-blue-900/20 border border-blue-500/20 flex items-center justify-center text-blue-400 overflow-hidden">
-                            <UserCircle size={28} />
-                        </div>
-                    </div>
-                </header>
 
-                <div className="p-8">
+                        <div className="flex items-center gap-3">
+                            {/* Profile Box */}
+                            <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl pl-4 pr-1 py-1 group hover:border-blue-500/30 transition-all">
+                                <div className="hidden sm:flex flex-col items-end">
+                                    <span className="text-xs font-black text-white leading-none capitalize">{user?.username || "Admin"}</span>
+                                    <span className="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-1">{user?.role || "Manager"}</span>
+                                </div>
+                                <div className="h-8 w-8 rounded-lg bg-blue-600 p-0.5 shadow-lg shadow-blue-500/20 relative">
+                                    <img
+                                        src={`https://ui-avatars.com/api/?name=${user?.username || "A"}&background=2563eb&color=fff`}
+                                        className="w-full h-full object-cover rounded-[6px]"
+                                        alt="User"
+                                    />
+                                    <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-[#050b18] rounded-full" />
+                                </div>
+                                <button
+                                    onClick={handleLogout}
+                                    className="h-8 w-8 rounded-lg bg-red-500/10 hover:bg-red-500 flex items-center justify-center text-red-500 hover:text-white transition-all ml-1"
+                                    title="Logout"
+                                >
+                                    <LogOut size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+                </div>
+
+                <div className="px-8 pb-8">
                     {children}
                 </div>
             </main>
