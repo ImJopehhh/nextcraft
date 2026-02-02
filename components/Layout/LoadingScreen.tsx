@@ -12,13 +12,13 @@ export default function LoadingScreen() {
             setProgress((oldProgress) => {
                 if (oldProgress === 100) {
                     clearInterval(timer);
-                    setTimeout(() => setLoading(false), 500);
+                    setTimeout(() => setLoading(false), 200);
                     return 100;
                 }
-                const diff = Math.random() * 10;
+                const diff = Math.random() * 25; // Faster increment
                 return Math.min(oldProgress + diff, 100);
             });
-        }, 150);
+        }, 60); // Faster interval
 
         return () => clearInterval(timer);
     }, []);
