@@ -1,11 +1,11 @@
 "use client";
 
-import LoadingScreen from "@/components/LoadingScreen";
+import LoadingScreen from "@/components/home/LoadingScreen";
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import AboutUs from "@/components/AboutUs";
-import Features from "@/components/Features";
-import Team from "@/components/Team";
+import Hero from "@/components/home/Hero";
+import AboutUs from "@/components/home/AboutUs";
+import Features from "@/components/home/Features";
+import Team from "@/components/home/Team";
 import Footer from "@/components/Footer";
 import { motion, useScroll, useSpring } from "framer-motion";
 
