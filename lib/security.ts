@@ -29,7 +29,11 @@ export function recordFailedAttempt(identifier: string) {
     }
 
     loginAttempts.set(identifier, { count: nextCount, lockUntil });
-    return { locked: !!lockUntil, nextCount };
+    return {
+        locked: !!lockUntil,
+        nextCount,
+        timeLeft: lockUntil ? 60 : 0
+    };
 }
 
 export function clearAttempts(identifier: string) {

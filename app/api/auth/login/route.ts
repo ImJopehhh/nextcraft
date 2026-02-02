@@ -20,7 +20,10 @@ export async function POST(req: Request) {
 
         if (attempt.locked) {
             return NextResponse.json(
-                { message: `Too many attempts. Try again in ${attempt.timeLeft} seconds.` },
+                {
+                    message: `Too many attempts. Try again in ${attempt.timeLeft} seconds.`,
+                    timeLeft: attempt.timeLeft
+                },
                 { status: 429 }
             );
         }
@@ -41,9 +44,9 @@ export async function POST(req: Request) {
         const isPasswordValid = await bcrypt.compare(password, admin.password);
 
         if (!isPasswordValid) {
-            const { locked } = recordFailedAttempt(identifier);
+            const { locked, timeLeft } = recordFailedAttempt(identifier);
             const message = locked ? "Too many attempts. Locked for 1 minute." : "Invalid credentials";
-            return NextResponse.json({ message }, { status: 401 });
+            return NextResponse.json({ message, timeLeft: locked ? timeLeft : undefined }, { status: 401 });
         }
 
         // Success - Clear attempts and create session

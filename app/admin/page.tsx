@@ -13,11 +13,14 @@ import {
 
 export default function AdminOverview() {
     const [user, setUser] = useState<any>(null);
+    const [dateString, setDateString] = useState<string>("");
 
     useEffect(() => {
         fetch("/api/auth/me")
             .then(res => res.json())
             .then(data => setUser(data.user));
+
+        setDateString(new Date().toLocaleDateString());
     }, []);
 
     const stats = [
@@ -41,7 +44,7 @@ export default function AdminOverview() {
                     </h1>
                     <p className="text-slate-400 mt-1 flex items-center gap-2">
                         <Clock size={14} />
-                        Sistem dalam keadaan optimal. Terakhir masuk: {new Date().toLocaleDateString()}
+                        Sistem dalam keadaan optimal. Terakhir masuk: {dateString || "..."}
                     </p>
                 </div>
 

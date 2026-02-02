@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock, Mail, ArrowRight, ShieldAlert, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -11,10 +11,24 @@ export default function AdminLogin() {
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [cooldown, setCooldown] = useState(0);
     const router = useRouter();
+
+    // Cooldown timer logic
+    useEffect(() => {
+        if (cooldown <= 0) return;
+
+        const interval = setInterval(() => {
+            setCooldown((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [cooldown]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (cooldown > 0) return;
+
         setError("");
         setLoading(true);
 
@@ -28,6 +42,9 @@ export default function AdminLogin() {
             const data = await res.json();
 
             if (!res.ok) {
+                if (data.timeLeft) {
+                    setCooldown(data.timeLeft);
+                }
                 throw new Error(data.message || "Login failed");
             }
 
@@ -123,11 +140,15 @@ export default function AdminLogin() {
 
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={loading || cooldown > 0}
                             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-blue-900/20 active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <Loader2 size={20} className="animate-spin" />
+                            ) : cooldown > 0 ? (
+                                <>
+                                    Tunggu {cooldown}s
+                                </>
                             ) : (
                                 <>
                                     Masuk Sekarang
