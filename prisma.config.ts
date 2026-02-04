@@ -3,8 +3,15 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
-const databaseUrl = `mysql://${DB_USER}:${encodeURIComponent(DB_PASSWORD || '')}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+const clean = (val?: string) => val?.replace(/["']/g, "").trim() || "";
+
+const user = clean(process.env.DB_USER);
+const pass = process.env.DB_PASSWORD;
+const host = clean(process.env.DB_HOST);
+const port = clean(process.env.DB_PORT);
+const name = clean(process.env.DB_NAME);
+
+const databaseUrl = `mysql://${user}:${encodeURIComponent(pass || '')}@${host}:${port}/${name}`;
 process.env.DATABASE_URL = databaseUrl;
 
 export default defineConfig({
