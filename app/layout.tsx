@@ -18,9 +18,10 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata() {
-  let settings;
+  let settings: any;
   try {
-    settings = await prisma.globalSettings.findUnique({ where: { id: 1 } });
+    const data: any[] = await prisma.$queryRaw`SELECT * FROM GlobalSettings LIMIT 1`;
+    settings = data[0];
   } catch (e) {
     // Fallback if DB not ready
   }

@@ -37,14 +37,32 @@
 3.  **Setup Database**
     Update `.env` with your MySQL credentials:
     ```env
-    DATABASE_URL="mysql://user:password@host:port/database"
-    ```
-    Then push the schema:
+   # Database Configuration
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=your_password
+   DB_PORT=3306
+   DB_NAME=nextcraft_db
+   DATABASE_URL="mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+
+   # Authentication
+   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+
+   # App Settings
+   APP_URL=http://localhost:3000
+
+   # Initial Admin Account (Auto-created on first run)
+   INITIAL_ADMIN_EMAIL=admin@web.next
+   INITIAL_ADMIN_USERNAME=webmaster
+   INITIAL_ADMIN_PASSWORD=admin123
+   ```
+
+4. **Initialize the database**
     ```bash
     npx prisma db push
     ```
 
-4.  **Run the checks**
+5.  **Run the checks**
     ```bash
     npm run dev
     ```
