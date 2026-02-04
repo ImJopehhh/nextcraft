@@ -4,32 +4,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 // Keep track of loading state at the module level (persists as long as the page isn't hard-reloaded)
-let hasShownLoading = false;
-
 export default function LoadingScreen() {
-    const [loading, setLoading] = useState(!hasShownLoading);
+    const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
-        if (hasShownLoading) {
+        // Check if we've already shown the loading screen in this session
+        const hasShownInSession = sessionStorage.getItem("nextcraft_loaded");
+
+        if (hasShownInSession) {
             setLoading(false);
             return;
         }
 
+        // If not shown, start the loading animation
+        setLoading(true);
+
         const timer = setInterval(() => {
             setProgress((oldProgress) => {
-                if (oldProgress === 100) {
+                if (oldProgress >= 100) {
                     clearInterval(timer);
                     setTimeout(() => {
                         setLoading(false);
-                        hasShownLoading = true;
-                    }, 200);
+                        try {
+                            sessionStorage.setItem("nextcraft_loaded", "true");
+                        } catch (e) {
+                            // Fallback if sessionStorage is full or unavailable
+                        }
+                    }, 400);
                     return 100;
                 }
-                const diff = Math.random() * 5; // Faster increment
+                const diff = Math.random() * 10; // Varied increment
                 return Math.min(oldProgress + diff, 100);
             });
-        }, 3); // Faster interval
+        }, 50);
 
         return () => clearInterval(timer);
     }, []);
