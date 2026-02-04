@@ -1,29 +1,38 @@
 import { PrismaClient } from "@prisma/client";
 
-const clean = (val?: string) => val?.replace(/["']/g, "").trim() || "";
+const getDatabaseUrl = () => {
+    // Aggressive cleaning function
+    const sanitize = (val?: string) => val?.replace(/["']/g, "").trim() || "";
 
-const user = clean(process.env.DB_USER);
-const pass = process.env.DB_PASSWORD; // Keep full password, but ensure it's defined
-const host = clean(process.env.DB_HOST);
-const port = clean(process.env.DB_PORT);
-const name = clean(process.env.DB_NAME);
+    const user = sanitize(process.env.DB_USER);
+    const pass = process.env.DB_PASSWORD || ""; // Password can have spaces, only remove quotes
+    const host = sanitize(process.env.DB_HOST);
+    const port = sanitize(process.env.DB_PORT).replace(/\D/g, ""); // ONLY digits for port
+    const name = sanitize(process.env.DB_NAME);
 
-console.log("----------------------------------------");
-console.log("🔍 DEBUG: Database Connection Info (Sanitized)");
-console.log(`DB_HOST: '${host}'`);
-console.log(`DB_PORT: '${port}'`);
-console.log(`DB_USER: '${user}'`);
-console.log(`DB_NAME: '${name}'`);
-console.log(`DB_PASSWORD length: ${pass?.length}`);
+    // Fallbacks if variables are missing
+    const fHost = host || "127.0.0.1";
+    const fPort = port || "3306";
+    const fUser = user || "root";
+    const fName = name || "nextcraft";
 
-const encodedPassword = encodeURIComponent(pass || '');
-const databaseUrl = `mysql://${user}:${encodedPassword}@${host}:${port}/${name}`;
+    // Build URL with explicit encoding
+    const encodedPass = encodeURIComponent(pass.replace(/["']/g, "").trim());
+    const url = `mysql://${fUser}:${encodedPass}@${fHost}:${fPort}/${fName}`;
 
-// Mask password for logging
-const logSafeUrl = databaseUrl.replace(encodedPassword, '****');
-console.log(`Generated DATABASE_URL: ${logSafeUrl}`);
-console.log("----------------------------------------");
+    console.log("----------------------------------------");
+    console.log("🚀 PRISMA: Constructing Database Connection");
+    console.log(`📡 Target: ${fHost}:${fPort}`);
+    console.log(`👤 User: ${fUser}`);
+    console.log(`📂 Database: ${fName}`);
+    // DO NOT log the full URL for security, even masked, let's just confirm it's built
+    console.log("✅ Connection string constructed and sanitized.");
+    console.log("----------------------------------------");
 
+    return url;
+};
+
+const databaseUrl = getDatabaseUrl();
 process.env.DATABASE_URL = databaseUrl;
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
@@ -36,7 +45,7 @@ export const prisma =
                 url: databaseUrl,
             },
         },
-        log: ["query"],
+        log: ["error", "warn"],
     });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
