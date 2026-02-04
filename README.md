@@ -43,18 +43,12 @@
    DB_PASSWORD=your_password
    DB_PORT=3306
    DB_NAME=nextcraft_db
-   DATABASE_URL="mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 
    # Authentication
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+   JWT_SECRET=your-super-secret-jwt-key
 
    # App Settings
-   APP_URL=http://localhost:3000
-
-   # Initial Admin Account (Auto-created on first run)
-   INITIAL_ADMIN_EMAIL=admin@web.next
-   INITIAL_ADMIN_USERNAME=webmaster
-   INITIAL_ADMIN_PASSWORD=admin123
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
    ```
 
 4. **Initialize the database**

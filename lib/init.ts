@@ -48,9 +48,9 @@ export async function initializeDatabase() {
         if (adminCount === 0) {
             console.log("🚀 No admin found. Initializing default Webmaster...");
 
-            const email = process.env.INIT_ADMIN_EMAIL || "admin@web.next";
-            const username = process.env.INIT_ADMIN_USERNAME || "webmaster";
-            const password = process.env.INIT_ADMIN_PASSWORD || "admin123";
+            const email = "admin@next.craft";
+            const username = "webmaster";
+            const password = "admin123";
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
