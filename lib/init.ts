@@ -1,8 +1,48 @@
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
+import { execSync } from "child_process";
+
+/**
+ * Ensures all database tables exist.
+ * In development: auto-creates tables from schema
+ * In production: throws error with helpful message
+ */
+async function ensureTablesExist() {
+    try {
+        // Try to query Admin table to check if it exists
+        await prisma.$queryRaw`SELECT 1 FROM Admin LIMIT 1`;
+    } catch (error) {
+        const isDevelopment = process.env.NODE_ENV !== 'production';
+
+        if (isDevelopment) {
+            console.log("📦 Database tables not found. Auto-creating from schema...");
+
+            try {
+                // Use Prisma db push to sync schema without migrations
+                execSync('npx prisma db push --accept-data-loss --skip-generate', {
+                    stdio: 'inherit',
+                    cwd: process.cwd()
+                });
+
+                console.log("✅ Database schema synchronized successfully!");
+            } catch (pushError) {
+                console.error("❌ Failed to create database tables:", pushError);
+                throw pushError;
+            }
+        } else {
+            console.error("❌ Database tables not found!");
+            console.error("📋 Please run: npx prisma migrate deploy");
+            throw new Error("Database not initialized. Run migrations first.");
+        }
+    }
+}
 
 export async function initializeDatabase() {
     try {
+        // First, ensure all tables exist
+        await ensureTablesExist();
+
+        // Then check if we need to create default admin
         const adminCount = await prisma.admin.count();
 
         if (adminCount === 0) {
