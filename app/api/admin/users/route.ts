@@ -10,7 +10,6 @@ export async function GET() {
                 username: true,
                 email: true,
                 role: true,
-                lastLogin: true,
                 createdAt: true,
             },
             orderBy: { createdAt: 'desc' }
