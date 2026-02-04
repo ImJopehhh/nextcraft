@@ -67,15 +67,19 @@ npm install
 ```
 
 ### 3. Setup Environment
-Buat file `.env` di direktori root dan sesuaikan konfigurasinya:
+Buat file `.env` di direktori root dan sesuaikan konfigurasinya mengikuti struktur berikut:
 ```env
-# Database
-DATABASE_URL="mysql://user:password@localhost:3306/nextcraft_db"
+# [DATABASE CONFIGURATION]
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_PORT=3306
+DB_NAME=nextcraft_db
 
-# Authentication
-JWT_SECRET="masukkan-secret-key-anda-disini"
+# [AUTHENTICATION]
+JWT_SECRET="your_secret_key"
 
-# App Branding
+# [APP SETTINGS]
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
