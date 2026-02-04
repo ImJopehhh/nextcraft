@@ -6,11 +6,15 @@ import { defineConfig } from "prisma/config";
 const sanitize = (val?: string) => val?.replace(/["']/g, "").trim() || "";
 const user = sanitize(process.env.DB_USER);
 const pass = sanitize(process.env.DB_PASSWORD);
-const host = sanitize(process.env.DB_HOST);
-const port = sanitize(process.env.DB_PORT).replace(/\D/g, "");
+const rawHost = sanitize(process.env.DB_HOST);
+const rawPort = sanitize(process.env.DB_PORT).replace(/\D/g, "");
 const name = sanitize(process.env.DB_NAME);
 
-const databaseUrl = `mysql://${user || 'root'}:${encodeURIComponent(pass)}@${host || '127.0.0.1'}:${port || '3306'}/${name || 'nextcraft'}`;
+const hostParts = rawHost.split(":");
+const fHost = hostParts[0] || "127.0.0.1";
+const fPort = hostParts[1] || rawPort || "3306";
+
+const databaseUrl = `mysql://${user || 'root'}:${encodeURIComponent(pass)}@${fHost}:${fPort}/${name || 'nextcraft'}`;
 process.env.DATABASE_URL = databaseUrl;
 
 export default defineConfig({

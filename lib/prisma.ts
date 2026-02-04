@@ -6,13 +6,14 @@ const getDatabaseUrl = () => {
 
     const user = sanitize(process.env.DB_USER);
     const pass = process.env.DB_PASSWORD || ""; // Password can have spaces, only remove quotes
-    const host = sanitize(process.env.DB_HOST);
-    const port = sanitize(process.env.DB_PORT).replace(/\D/g, ""); // ONLY digits for port
+    const rawHost = sanitize(process.env.DB_HOST);
+    const rawPort = sanitize(process.env.DB_PORT).replace(/\D/g, "");
     const name = sanitize(process.env.DB_NAME);
 
-    // Fallbacks if variables are missing
-    const fHost = host || "127.0.0.1";
-    const fPort = port || "3306";
+    // Ultra-defensive: parse host if it contains a port
+    const hostParts = rawHost.split(":");
+    const fHost = hostParts[0] || "127.0.0.1";
+    const fPort = hostParts[1] || rawPort || "3306";
     const fUser = user || "root";
     const fName = name || "nextcraft";
 
