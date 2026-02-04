@@ -29,3 +29,11 @@ model Admin {
   updatedAt DateTime  @updatedAt
   lastLogin DateTime?
 }
+
+model GlobalSettings {
+  id        Int      @id @default(1)
+  siteName  String   @default("NextCraft")
+  siteLogo  String   @default("/assets/nextcraftlogo.jpg")
+  siteUrl   String   @default("http://localhost:3000")
+  updatedAt DateTime @updatedAt
+}

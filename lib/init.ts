@@ -65,7 +65,26 @@ export async function initializeDatabase() {
 
             console.log(`✅ Default Webmaster created: ${username} (${email})`);
         } else {
-            console.log("📌 Database already has admin accounts. Skipping initialization.");
+            console.log("📌 Database already has admin accounts. Skipping admin initialization.");
+        }
+
+        // Initialize Global Settings using raw query to bypass type errors if client not regenerated
+        try {
+            const settingsCheck: any[] = await prisma.$queryRaw`SELECT id FROM GlobalSettings LIMIT 1`;
+            if (settingsCheck.length === 0) {
+                console.log("🛠️ Initializing default Global Settings (Raw)...");
+                const siteName = "NextCraft";
+                const siteLogo = "/assets/nextcraftlogo.jpg";
+                const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+                await prisma.$executeRaw`
+                    INSERT INTO GlobalSettings (id, siteName, siteLogo, siteUrl, updatedAt) 
+                    VALUES (1, ${siteName}, ${siteLogo}, ${siteUrl}, NOW())
+                `;
+                console.log("✅ Global Settings initialized.");
+            }
+        } catch (settingsError) {
+            console.error("⚠️ Global Settings initialization check failed:", settingsError);
         }
     } catch (error) {
         console.error("❌ Database initialization failed:", error);
