@@ -24,10 +24,10 @@ export default function AdminNotFound() {
                     4<span className="text-blue-600">0</span>4
                 </h1>
 
-                <h2 className="text-xl font-bold text-white mb-2">Halaman Tidak Ditemukan</h2>
+                <h2 className="text-xl font-bold text-white mb-2">Page Not Found</h2>
                 <p className="text-slate-500 text-sm mb-10 leading-relaxed font-medium">
-                    Maaf, menu atau halaman yang Anda tuju di dalam Panel Admin <br />
-                    tidak tersedia atau masih dalam pengembangan.
+                    Sorry, the menu or page you are looking for in the Admin Panel <br />
+                    is unavailable or still under development.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -36,7 +36,7 @@ export default function AdminNotFound() {
                         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3.5 rounded-2xl font-black text-sm transition-all shadow-lg shadow-blue-500/20 active:scale-95"
                     >
                         <Home size={18} />
-                        KEMBALI KE DASHBOARD
+                        BACK TO DASHBOARD
                     </Link>
 
                     <button
@@ -44,7 +44,7 @@ export default function AdminNotFound() {
                         className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-slate-300 px-6 py-3.5 rounded-2xl font-black text-sm transition-all border border-white/5 active:scale-95"
                     >
                         <ArrowLeft size={18} />
-                        KEMBALI KE SEBELUMNYA
+                        GO BACK
                     </button>
                 </div>
             </motion.div>

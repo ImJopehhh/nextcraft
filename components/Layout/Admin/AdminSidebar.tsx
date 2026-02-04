@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -15,6 +15,27 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ isSidebarOpen, user, onLinkClick, isMobile = false }: AdminSidebarProps) {
     const pathname = usePathname();
+    const [settings, setSettings] = useState({ siteName: "NextCraft", siteLogo: "/assets/nextcraftlogo.jpg" });
+
+    React.useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch("/api/settings");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.siteName) {
+                        setSettings({
+                            siteName: data.siteName,
+                            siteLogo: data.siteLogo || "/assets/nextcraftlogo.jpg"
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to load settings", e);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const renderNavItems = (items: any[]) => {
         return items.map((item) => {
@@ -47,10 +68,10 @@ export default function AdminSidebar({ isSidebarOpen, user, onLinkClick, isMobil
         <div className="flex flex-col h-full">
             <div className="p-6 flex items-center gap-3">
                 <div className="h-9 w-9 shrink-0 rounded-lg overflow-hidden border border-blue-500/20">
-                    <img src="/assets/nextcraftlogo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                    <img src={settings.siteLogo} alt="Logo" className="w-full h-full object-cover" />
                 </div>
                 {(isSidebarOpen || isMobile) && (
-                    <span className="text-lg font-black text-white tracking-tighter">NEXT<span className="text-blue-500">CRAFT</span></span>
+                    <span className="text-lg font-black text-white tracking-tighter uppercase">{settings.siteName}</span>
                 )}
             </div>
 
