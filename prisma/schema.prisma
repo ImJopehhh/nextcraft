@@ -32,8 +32,11 @@ model Admin {
 
 model GlobalSettings {
   id        Int      @id @default(1)
-  siteName  String   @default("NextCraft")
-  siteLogo  String   @default("/assets/nextcraftlogo.jpg")
-  siteUrl   String   @default("http://localhost:3000")
-  updatedAt DateTime @updatedAt
+  siteName        String   @default("NextCraft")
+  siteLogo        String   @default("/assets/nextcraftlogo.jpg")
+  siteUrl         String   @default("http://localhost:3000")
+  siteDescription String   @default("Modern digital solutions for your business success.")
+  siteKeywords    String   @default("nextjs, web, digital, agency")
+  siteFavicon     String   @default("/assets/nextcraftlogo.jpg")
+  updatedAt       DateTime @updatedAt
 }

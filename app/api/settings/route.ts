@@ -14,12 +14,18 @@ export async function GET() {
 export async function PUT(req: Request) {
     try {
         const body = await req.json();
-        const { siteName, siteLogo, siteUrl } = body;
+        const { siteName, siteLogo, siteUrl, siteDescription, siteKeywords, siteFavicon } = body;
 
         // Use raw query to update to avoid type errors if client not generated
         await prisma.$executeRaw`
             UPDATE GlobalSettings 
-            SET siteName=${siteName}, siteLogo=${siteLogo}, siteUrl=${siteUrl}, updatedAt=NOW()
+            SET siteName=${siteName}, 
+                siteLogo=${siteLogo}, 
+                siteUrl=${siteUrl}, 
+                siteDescription=${siteDescription},
+                siteKeywords=${siteKeywords},
+                siteFavicon=${siteFavicon},
+                updatedAt=NOW()
             WHERE id=1
         `;
 

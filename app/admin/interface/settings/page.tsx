@@ -11,7 +11,10 @@ export default function GlobalSettingsPage() {
     const [formData, setFormData] = useState({
         siteName: "",
         siteUrl: "",
-        siteLogo: ""
+        siteLogo: "",
+        siteDescription: "",
+        siteKeywords: "",
+        siteFavicon: ""
     });
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,7 +31,10 @@ export default function GlobalSettingsPage() {
                 setFormData({
                     siteName: data.siteName,
                     siteUrl: data.siteUrl,
-                    siteLogo: data.siteLogo
+                    siteLogo: data.siteLogo,
+                    siteDescription: data.siteDescription || "",
+                    siteKeywords: data.siteKeywords || "",
+                    siteFavicon: data.siteFavicon || ""
                 });
             }
         }
@@ -182,10 +188,62 @@ export default function GlobalSettingsPage() {
                                             />
                                         </div>
                                         <p className="text-[10px] text-slate-500 font-medium">
-                                            Max size: 2MB. Supports: JPG, PNG, WEBP. <br />
-                                            If upload fails, you can paste an external URL (CDN) above.
+                                            Max size: 2MB. Supports: JPG, PNG, WEBP.
                                         </p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* SEO Section */}
+                        <div className="pt-8 border-t border-blue-900/10 space-y-8">
+                            <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                                <Globe size={16} className="text-blue-500" />
+                                SEO Configuration
+                            </h3>
+
+                            <div className="space-y-4">
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                    Site Description
+                                </label>
+                                <textarea
+                                    value={formData.siteDescription}
+                                    onChange={(e) => setFormData({ ...formData, siteDescription: e.target.value })}
+                                    rows={3}
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-blue-500/50 transition-all font-medium placeholder:text-slate-700 text-sm resize-none"
+                                    placeholder="Enter a brief description of your website for search engines..."
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                    Keywords
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.siteKeywords}
+                                    onChange={(e) => setFormData({ ...formData, siteKeywords: e.target.value })}
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-blue-500/50 transition-all font-bold placeholder:text-slate-700"
+                                    placeholder="nextjs, agency, creative, portfolio"
+                                />
+                                <p className="text-[10px] text-slate-500 font-bold">Separate keywords with commas.</p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                    Favicon URL
+                                </label>
+                                <div className="flex gap-4 items-center">
+                                    <div className="h-12 w-12 shrink-0 bg-white/5 rounded-xl border border-white/10 p-2">
+                                        <img src={formData.siteFavicon || "/assets/nextcraftlogo.jpg"} className="w-full h-full object-contain" alt="Favicon" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={formData.siteFavicon}
+                                        onChange={(e) => setFormData({ ...formData, siteFavicon: e.target.value })}
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-blue-500/50 transition-all font-bold placeholder:text-slate-700"
+                                        placeholder="/assets/favicon.ico or URL"
+                                    />
                                 </div>
                             </div>
                         </div>
