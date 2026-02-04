@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Modern digital solutions for your business success.",
 };
 
+import { ToastProvider } from "@/context/ToastContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,8 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#050b18] text-white`}
       >
-        <LoadingScreen />
-        {children}
+        <ToastProvider>
+          <LoadingScreen />
+          {children}
+        </ToastProvider>
         <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03] grayscale bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]" />
       </body>
     </html>

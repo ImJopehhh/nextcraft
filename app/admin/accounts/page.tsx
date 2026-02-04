@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, UserPlus, Search, Filter, MoreVertical, Shield, Trash2, Edit, X, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
 
 export default function AccountsPage() {
+    const { showToast } = useToast();
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -60,8 +62,9 @@ export default function AccountsPage() {
                 setIsModalOpen(false);
                 fetchUsers();
                 resetForm();
+                showToast(editMode ? "Admin updated successfully!" : "New admin created!", "success");
             } else {
-                alert("Operation failed");
+                showToast("Operation failed. Please check your data.", "error");
             }
         } catch (error) {
             console.error("Error saving user", error);
@@ -75,8 +78,14 @@ export default function AccountsPage() {
 
         try {
             const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
-            if (res.ok) fetchUsers();
+            if (res.ok) {
+                fetchUsers();
+                showToast("Admin deleted successfully", "success");
+            } else {
+                showToast("Failed to delete admin", "error");
+            }
         } catch (error) {
+            showToast("An error occurred while deleting", "error");
             console.error("Error deleting user", error);
         }
     };

@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock, Mail, ArrowRight, ShieldAlert, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
 
 export default function AdminLogin() {
+    const { showToast } = useToast();
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
@@ -50,8 +52,10 @@ export default function AdminLogin() {
 
             router.push("/admin");
             router.refresh();
+            showToast("Welcome back, Explorer!", "success");
         } catch (err: any) {
             setError(err.message);
+            showToast(err.message, "error");
         } finally {
             setLoading(false);
         }

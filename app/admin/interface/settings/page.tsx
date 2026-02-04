@@ -3,8 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Save, Globe, ImageIcon, Link as LinkIcon, Info, Upload, AlertCircle } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 export default function GlobalSettingsPage() {
+    const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         siteName: "",
@@ -42,9 +44,9 @@ export default function GlobalSettingsPage() {
             });
 
             if (res.ok) {
-                alert("Settings saved successfully! You may need to refresh the page to see changes.");
+                showToast("Settings saved successfully!", "success");
             } else {
-                alert("Failed to save settings.");
+                showToast("Failed to save settings.", "error");
             }
         } catch (error) {
             console.error(error);
@@ -59,7 +61,7 @@ export default function GlobalSettingsPage() {
 
         // Validation: Max 2MB
         if (file.size > 2 * 1024 * 1024) {
-            alert("File size exceeds 2MB limit.");
+            showToast("File size exceeds 2MB limit.", "warning");
             return;
         }
 
@@ -76,12 +78,13 @@ export default function GlobalSettingsPage() {
             if (res.ok) {
                 const data = await res.json();
                 setFormData({ ...formData, siteLogo: data.url });
+                showToast("Logo uploaded successfully!", "success");
             } else {
-                alert("Upload failed. Please try again or use a manual URL.");
+                showToast("Upload failed. Using manual URL is an option.", "warning");
             }
         } catch (error) {
             console.error("Upload error:", error);
-            alert("Upload error.");
+            showToast("Upload error occurred.", "error");
         } finally {
             setUploading(false);
         }
