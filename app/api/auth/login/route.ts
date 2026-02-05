@@ -7,6 +7,7 @@ import { getLoginAttempt, recordFailedAttempt, clearAttempts } from "@/lib/secur
 export async function POST(req: Request) {
     try {
         const { identifier, password, rememberMe } = await req.json();
+        const ip = req.headers.get("x-forwarded-for") || "unknown";
 
         if (!identifier || !password) {
             return NextResponse.json(
@@ -15,8 +16,8 @@ export async function POST(req: Request) {
             );
         }
 
-        // In-Memory Rate Limiting Logic
-        const attempt = getLoginAttempt(identifier);
+        // In-Memory Rate Limiting Logic (IP + Identifier)
+        const attempt = getLoginAttempt(identifier, ip);
 
         if (attempt.locked) {
             return NextResponse.json(
@@ -35,22 +36,18 @@ export async function POST(req: Request) {
             },
         });
 
-        if (!admin) {
-            recordFailedAttempt(identifier);
-            return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
-        }
+        // Timing Attack Protection: Always perform a bcrypt comparison
+        const passwordToCompare = admin ? admin.password : "$2a$10$NotRealPasswordForTimingAttackOnlyJustSomeRandomHashToTakeTime";
+        const isPasswordValid = await bcrypt.compare(password, passwordToCompare);
 
-        // Verify Password
-        const isPasswordValid = await bcrypt.compare(password, admin.password);
-
-        if (!isPasswordValid) {
-            const { locked, timeLeft } = recordFailedAttempt(identifier);
-            const message = locked ? "Too many attempts. Locked for 1 minute." : "Invalid credentials";
+        if (!admin || !isPasswordValid) {
+            const { locked, timeLeft } = recordFailedAttempt(identifier, ip);
+            const message = locked ? `Too many attempts. Locked for ${timeLeft}s.` : "Invalid credentials";
             return NextResponse.json({ message, timeLeft: locked ? timeLeft : undefined }, { status: 401 });
         }
 
         // Success - Clear attempts and create session
-        clearAttempts(identifier);
+        clearAttempts(identifier, ip);
 
         await createSession({
             id: admin.id,

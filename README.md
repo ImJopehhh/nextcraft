@@ -20,7 +20,8 @@
 ## 💎 Core Features 💎
 
 ### 🛡️ Admin Dashboard (`/admin`)
-- **Secured Authentication**: Sistem login berlapis dengan proteksi **Bcrypt** dan **JWT Session Management**.
+- **Ultimate Security**: Proteksi **Timing Attacks**, **Bcrypt** hashing, dan **SQL Injection Resistance**.
+- **Brute-Force Shield**: Sistem **IP-based Rate Limiting** dengan **Exponential Backoff Lockout**.
 - **Role-Based Access Control (RBAC)**: Manajemen akses hirarkis untuk **Webmaster**, **Developer**, dan **Admin**.
 - **Collapsible Sidebar**: Sidebar dinamis dengan fitur *accordion category* yang menghemat ruang kerja.
 - **Global Settings UI**: Kendali penuh atas identitas situs (Site Name, Logo, SEO Description, Keywords, & Favicon) langsung dari dashboard.
