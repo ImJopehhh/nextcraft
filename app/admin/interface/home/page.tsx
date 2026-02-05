@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Info, LayoutTemplate, Type, Zap, Users } from "lucide-react";
+import { Save, Info, LayoutTemplate, Type, Zap, Users, X } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 import { BcodeParser } from "@/lib/bcode";
 
@@ -40,7 +40,7 @@ export default function HomePageEditor() {
     const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<any>({
         heroBadge: "",
         heroTitle: "",
         heroDescription: "",
@@ -52,10 +52,10 @@ export default function HomePageEditor() {
         aboutImage: "",
         featuresTitle: "",
         featuresSubtitle: "",
-        featuresList: "", // JSON string
+        featuresList: [],
         teamTitle: "",
         teamSubtitle: "",
-        teamList: "" // JSON string
+        teamList: []
     });
 
     useEffect(() => {
@@ -67,18 +67,12 @@ export default function HomePageEditor() {
             const res = await fetch("/api/content/home");
             if (res.ok) {
                 const data = await res.json();
-                // Ensure arrays are stringified for editing (simple approach) or handle as objects
-                // API returns parsed JSON for headers but our form expects strings for now or we build array editors
-                // For simplicity/robustness, let's keep them as JSON strings in the edit box unless we build a complex list editor
-                // But the DB returns object/array.
 
-                // Correction: The API returns the raw object from DB. If featuresList is JSON type in prisma, 
-                // it comes as object. We need to stringify it for the text area editor.
-
+                // Parse lists if they come as strings
                 const preparedData = {
                     ...data,
-                    featuresList: typeof data.featuresList === 'object' ? JSON.stringify(data.featuresList, null, 2) : data.featuresList,
-                    teamList: typeof data.teamList === 'object' ? JSON.stringify(data.teamList, null, 2) : data.teamList
+                    featuresList: typeof data.featuresList === 'string' ? JSON.parse(data.featuresList) : (data.featuresList || []),
+                    teamList: typeof data.teamList === 'string' ? JSON.parse(data.teamList) : (data.teamList || [])
                 };
 
                 setFormData(preparedData);
@@ -93,14 +87,9 @@ export default function HomePageEditor() {
     const handleSave = async () => {
         setLoading(true);
         try {
-            // Validate JSON
-            try {
-                JSON.parse(formData.featuresList);
-                JSON.parse(formData.teamList);
-            } catch (jsonErr) {
-                showToast("Invalid JSON in Features or Team list", "error");
-                setLoading(false);
-                return;
+            // Data is already arrays in state, API expects body which we stringify anyway
+            if (!Array.isArray(formData.featuresList) || !Array.isArray(formData.teamList)) {
+                throw new Error("Invalid list format");
             }
 
             const res = await fetch("/api/content/home", {
@@ -115,10 +104,44 @@ export default function HomePageEditor() {
                 showToast("Failed to update content", "error");
             }
         } catch (error) {
-            showToast("An error occurred", "error");
+            showToast("An error occurred during save", "error");
         } finally {
             setLoading(false);
         }
+    };
+
+    const updateFeature = (index: number, field: string, value: string) => {
+        const newList = [...formData.featuresList];
+        newList[index] = { ...newList[index], [field]: value };
+        setFormData({ ...formData, featuresList: newList });
+    };
+
+    const removeFeature = (index: number) => {
+        setFormData({ ...formData, featuresList: formData.featuresList.filter((_: any, i: number) => i !== index) });
+    };
+
+    const addFeature = () => {
+        setFormData({
+            ...formData,
+            featuresList: [...formData.featuresList, { icon: "Zap", title: "New Feature", desc: "Description here" }]
+        });
+    };
+
+    const updateMember = (index: number, field: string, value: string) => {
+        const newList = [...formData.teamList];
+        newList[index] = { ...newList[index], [field]: value };
+        setFormData({ ...formData, teamList: newList });
+    };
+
+    const removeMember = (index: number) => {
+        setFormData({ ...formData, teamList: formData.teamList.filter((_: any, i: number) => i !== index) });
+    };
+
+    const addMember = () => {
+        setFormData({
+            ...formData,
+            teamList: [...formData.teamList, { name: "New Member", role: "Role", image: "https://i.pravatar.cc/150" }]
+        });
     };
 
     if (fetching) return <div className="p-8 text-center text-slate-500">Loading editor...</div>;
@@ -231,52 +254,129 @@ export default function HomePageEditor() {
 
                     {/* Features Section */}
                     <div className="bg-[#050b18]/40 border border-blue-900/10 p-8 rounded-[2.5rem] backdrop-blur-sm">
-                        <SectionHeader icon={Zap} title="Features Section" />
+                        <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+                            <div className="flex items-center gap-2">
+                                <Zap size={18} className="text-blue-500" />
+                                <h3 className="text-lg font-bold text-white">Features Section</h3>
+                            </div>
+                            <button
+                                onClick={addFeature}
+                                className="px-4 py-2 bg-blue-600/10 text-blue-500 rounded-xl text-xs font-bold hover:bg-blue-600/20 transition-all"
+                            >
+                                + ADD FEATURE
+                            </button>
+                        </div>
                         <div className="space-y-6">
-                            <InputGroup
-                                label="Subtitle"
-                                value={formData.featuresSubtitle}
-                                onChange={(v: string) => setFormData({ ...formData, featuresSubtitle: v })}
-                            />
-                            <InputGroup
-                                label="Title"
-                                value={formData.featuresTitle}
-                                onChange={(v: string) => setFormData({ ...formData, featuresTitle: v })}
-                            />
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Features List (JSON)</label>
-                                <textarea
-                                    value={formData.featuresList}
-                                    onChange={(e) => setFormData({ ...formData, featuresList: e.target.value })}
-                                    className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white font-mono text-xs min-h-[150px]"
-                                    placeholder='[{"title": "...", "desc": "...", "icon": "Zap"}]'
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputGroup
+                                    label="Subtitle"
+                                    value={formData.featuresSubtitle}
+                                    onChange={(v: string) => setFormData({ ...formData, featuresSubtitle: v })}
                                 />
+                                <InputGroup
+                                    label="Title"
+                                    value={formData.featuresTitle}
+                                    onChange={(v: string) => setFormData({ ...formData, featuresTitle: v })}
+                                />
+                            </div>
+
+                            <div className="grid gap-4">
+                                {formData.featuresList.map((feature: any, index: number) => (
+                                    <div key={index} className="p-6 bg-black/20 rounded-2xl border border-white/5 relative group">
+                                        <button
+                                            onClick={() => removeFeature(index)}
+                                            className="absolute top-4 right-4 text-red-500/50 hover:text-red-500 p-1 transition-all"
+                                            title="Remove Feature"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <InputGroup
+                                                label="Icon (Lucide Name)"
+                                                value={feature.icon}
+                                                onChange={(v: string) => updateFeature(index, 'icon', v)}
+                                            />
+                                            <div className="col-span-2">
+                                                <InputGroup
+                                                    label="Title"
+                                                    value={feature.title}
+                                                    onChange={(v: string) => updateFeature(index, 'title', v)}
+                                                />
+                                            </div>
+                                            <div className="col-span-3">
+                                                <InputGroup
+                                                    label="Description"
+                                                    value={feature.desc}
+                                                    onChange={(v: string) => updateFeature(index, 'desc', v)}
+                                                    isTextArea
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
 
                     {/* Team Section */}
                     <div className="bg-[#050b18]/40 border border-blue-900/10 p-8 rounded-[2.5rem] backdrop-blur-sm">
-                        <SectionHeader icon={Users} title="Team Section" />
+                        <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+                            <div className="flex items-center gap-2">
+                                <Users size={18} className="text-blue-500" />
+                                <h3 className="text-lg font-bold text-white">Team Section</h3>
+                            </div>
+                            <button
+                                onClick={addMember}
+                                className="px-4 py-2 bg-blue-600/10 text-blue-500 rounded-xl text-xs font-bold hover:bg-blue-600/20 transition-all"
+                            >
+                                + ADD MEMBER
+                            </button>
+                        </div>
                         <div className="space-y-6">
-                            <InputGroup
-                                label="Subtitle"
-                                value={formData.teamSubtitle}
-                                onChange={(v: string) => setFormData({ ...formData, teamSubtitle: v })}
-                            />
-                            <InputGroup
-                                label="Title"
-                                value={formData.teamTitle}
-                                onChange={(v: string) => setFormData({ ...formData, teamTitle: v })}
-                            />
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Team List (JSON)</label>
-                                <textarea
-                                    value={formData.teamList}
-                                    onChange={(e) => setFormData({ ...formData, teamList: e.target.value })}
-                                    className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white font-mono text-xs min-h-[150px]"
-                                    placeholder='[{"name": "...", "role": "...", "image": "..."}]'
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputGroup
+                                    label="Subtitle"
+                                    value={formData.teamSubtitle}
+                                    onChange={(v: string) => setFormData({ ...formData, teamSubtitle: v })}
                                 />
+                                <InputGroup
+                                    label="Title"
+                                    value={formData.teamTitle}
+                                    onChange={(v: string) => setFormData({ ...formData, teamTitle: v })}
+                                />
+                            </div>
+
+                            <div className="grid gap-4">
+                                {formData.teamList.map((member: any, index: number) => (
+                                    <div key={index} className="p-6 bg-black/20 rounded-2xl border border-white/5 relative group">
+                                        <button
+                                            onClick={() => removeMember(index)}
+                                            className="absolute top-4 right-4 text-red-500/50 hover:text-red-500 p-1 transition-all"
+                                            title="Remove Member"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <InputGroup
+                                                label="Name"
+                                                value={member.name}
+                                                onChange={(v: string) => updateMember(index, 'name', v)}
+                                            />
+                                            <InputGroup
+                                                label="Role"
+                                                value={member.role}
+                                                onChange={(v: string) => updateMember(index, 'role', v)}
+                                            />
+                                            <div className="col-span-2">
+                                                <InputGroup
+                                                    label="Image URL"
+                                                    value={member.image}
+                                                    onChange={(v: string) => updateMember(index, 'image', v)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
