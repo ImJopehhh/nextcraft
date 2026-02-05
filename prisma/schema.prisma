@@ -57,5 +57,15 @@ model HomePageContent {
   aboutDescription String  @db.Text
   aboutImage      String   @default("https://images.unsplash.com/photo-1522071823991-b99c223030c9")
   
+  // Features Section
+  featuresTitle    String   @default("Why Choose Us")
+  featuresSubtitle String   @default("Our Features")
+  featuresList     Json     @default("[{\"icon\": \"Zap\", \"title\": \"Fast Performance\", \"desc\": \"Optimized for speed.\"}, {\"icon\": \"ShieldCheck\", \"title\": \"Secure\", \"desc\": \"Enterprise-grade security.\"}, {\"icon\": \"Globe\", \"title\": \"Scalable\", \"desc\": \"Ready to grow.\"}]")
+
+  // Team Section
+  teamTitle        String   @default("Meet Our Team")
+  teamSubtitle     String   @default("Expertise")
+  teamList         Json     @default("[{\"name\": \"Alex Admin\", \"role\": \"CEO\", \"image\": \"https://i.pravatar.cc/150?u=a\"}, {\"name\": \"Sarah Dev\", \"role\": \"CTO\", \"image\": \"https://i.pravatar.cc/150?u=s\"}]")
+
   updatedAt       DateTime @updatedAt
 }

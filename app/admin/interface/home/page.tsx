@@ -1,9 +1,40 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Info, LayoutTemplate, Type, Image as ImageIcon } from "lucide-react";
+import { Save, Info, LayoutTemplate, Type, Zap, Users } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 import { BcodeParser } from "@/lib/bcode";
+
+// -- Components moved OUTSIDE to prevent re-creation and focus loss --
+
+const SectionHeader = ({ icon: Icon, title }: { icon: any, title: string }) => (
+    <div className="flex items-center gap-2 mb-6 pb-2 border-b border-white/10">
+        <Icon size={18} className="text-blue-500" />
+        <h3 className="text-lg font-bold text-white">{title}</h3>
+    </div>
+);
+
+const InputGroup = ({ label, value, onChange, placeholder, isTextArea = false }: any) => (
+    <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</label>
+        {isTextArea ? (
+            <textarea
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-blue-500/50 transition-all font-medium text-sm min-h-[100px]"
+                placeholder={placeholder}
+            />
+        ) : (
+            <input
+                type="text"
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-blue-500/50 transition-all font-bold text-sm"
+                placeholder={placeholder}
+            />
+        )}
+    </div>
+);
 
 export default function HomePageEditor() {
     const { showToast } = useToast();
@@ -18,7 +49,13 @@ export default function HomePageEditor() {
         aboutSubtitle: "",
         aboutTitle: "",
         aboutDescription: "",
-        aboutImage: ""
+        aboutImage: "",
+        featuresTitle: "",
+        featuresSubtitle: "",
+        featuresList: "", // JSON string
+        teamTitle: "",
+        teamSubtitle: "",
+        teamList: "" // JSON string
     });
 
     useEffect(() => {
@@ -30,7 +67,21 @@ export default function HomePageEditor() {
             const res = await fetch("/api/content/home");
             if (res.ok) {
                 const data = await res.json();
-                setFormData(data);
+                // Ensure arrays are stringified for editing (simple approach) or handle as objects
+                // API returns parsed JSON for headers but our form expects strings for now or we build array editors
+                // For simplicity/robustness, let's keep them as JSON strings in the edit box unless we build a complex list editor
+                // But the DB returns object/array.
+
+                // Correction: The API returns the raw object from DB. If featuresList is JSON type in prisma, 
+                // it comes as object. We need to stringify it for the text area editor.
+
+                const preparedData = {
+                    ...data,
+                    featuresList: typeof data.featuresList === 'object' ? JSON.stringify(data.featuresList, null, 2) : data.featuresList,
+                    teamList: typeof data.teamList === 'object' ? JSON.stringify(data.teamList, null, 2) : data.teamList
+                };
+
+                setFormData(preparedData);
             }
         } catch (e) {
             showToast("Failed to load content", "error");
@@ -42,6 +93,16 @@ export default function HomePageEditor() {
     const handleSave = async () => {
         setLoading(true);
         try {
+            // Validate JSON
+            try {
+                JSON.parse(formData.featuresList);
+                JSON.parse(formData.teamList);
+            } catch (jsonErr) {
+                showToast("Invalid JSON in Features or Team list", "error");
+                setLoading(false);
+                return;
+            }
+
             const res = await fetch("/api/content/home", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -59,35 +120,6 @@ export default function HomePageEditor() {
             setLoading(false);
         }
     };
-
-    const SectionHeader = ({ icon: Icon, title }: { icon: any, title: string }) => (
-        <div className="flex items-center gap-2 mb-6 pb-2 border-b border-white/10">
-            <Icon size={18} className="text-blue-500" />
-            <h3 className="text-lg font-bold text-white">{title}</h3>
-        </div>
-    );
-
-    const InputGroup = ({ label, value, onChange, placeholder, isTextArea = false }: any) => (
-        <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</label>
-            {isTextArea ? (
-                <textarea
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-blue-500/50 transition-all font-medium text-sm min-h-[100px]"
-                    placeholder={placeholder}
-                />
-            ) : (
-                <input
-                    type="text"
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-blue-500/50 transition-all font-bold text-sm"
-                    placeholder={placeholder}
-                />
-            )}
-        </div>
-    );
 
     if (fetching) return <div className="p-8 text-center text-slate-500">Loading editor...</div>;
 
@@ -196,6 +228,59 @@ export default function HomePageEditor() {
                             />
                         </div>
                     </div>
+
+                    {/* Features Section */}
+                    <div className="bg-[#050b18]/40 border border-blue-900/10 p-8 rounded-[2.5rem] backdrop-blur-sm">
+                        <SectionHeader icon={Zap} title="Features Section" />
+                        <div className="space-y-6">
+                            <InputGroup
+                                label="Subtitle"
+                                value={formData.featuresSubtitle}
+                                onChange={(v: string) => setFormData({ ...formData, featuresSubtitle: v })}
+                            />
+                            <InputGroup
+                                label="Title"
+                                value={formData.featuresTitle}
+                                onChange={(v: string) => setFormData({ ...formData, featuresTitle: v })}
+                            />
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Features List (JSON)</label>
+                                <textarea
+                                    value={formData.featuresList}
+                                    onChange={(e) => setFormData({ ...formData, featuresList: e.target.value })}
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white font-mono text-xs min-h-[150px]"
+                                    placeholder='[{"title": "...", "desc": "...", "icon": "Zap"}]'
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Team Section */}
+                    <div className="bg-[#050b18]/40 border border-blue-900/10 p-8 rounded-[2.5rem] backdrop-blur-sm">
+                        <SectionHeader icon={Users} title="Team Section" />
+                        <div className="space-y-6">
+                            <InputGroup
+                                label="Subtitle"
+                                value={formData.teamSubtitle}
+                                onChange={(v: string) => setFormData({ ...formData, teamSubtitle: v })}
+                            />
+                            <InputGroup
+                                label="Title"
+                                value={formData.teamTitle}
+                                onChange={(v: string) => setFormData({ ...formData, teamTitle: v })}
+                            />
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Team List (JSON)</label>
+                                <textarea
+                                    value={formData.teamList}
+                                    onChange={(e) => setFormData({ ...formData, teamList: e.target.value })}
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white font-mono text-xs min-h-[150px]"
+                                    placeholder='[{"name": "...", "role": "...", "image": "..."}]'
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 {/* Sidebar Info */}

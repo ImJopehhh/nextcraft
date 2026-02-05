@@ -40,7 +40,7 @@ export default function HomeClient({ content }: { content: any }) {
                     transition={{ duration: 1 }}
                     viewport={{ once: true }}
                 >
-                    <Features />
+                    <Features content={content} />
                 </motion.div>
 
                 <motion.div
@@ -49,7 +49,7 @@ export default function HomeClient({ content }: { content: any }) {
                     transition={{ duration: 1 }}
                     viewport={{ once: true }}
                 >
-                    <Team />
+                    <Team content={content} />
                 </motion.div>
             </div>
         </>

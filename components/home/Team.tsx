@@ -3,30 +3,18 @@
 import { motion } from "framer-motion";
 import { Github, Twitter, Linkedin } from "lucide-react";
 
-const team = [
-    {
-        name: "Alex Johnson",
-        role: "CEO & Founder",
-        image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400",
-    },
-    {
-        name: "Sarah Chen",
-        role: "Lead Designer",
-        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
-    },
-    {
-        name: "Marcus Thorne",
-        role: "CTO / Backend Expert",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400",
-    },
-    {
-        name: "Elena Rodriguez",
-        role: "Frontend Specialist",
-        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400",
-    },
-];
+export default function Team({ content }: { content: any }) {
+    if (!content) return null;
 
-export default function Team() {
+    let team: any[] = [];
+    try {
+        team = typeof content.teamList === 'string'
+            ? JSON.parse(content.teamList)
+            : content.teamList || [];
+    } catch (e) {
+        console.error("Failed to parse team list", e);
+    }
+
     return (
         <section id="team" className="py-24 bg-[#050b18]">
             <div className="container mx-auto px-6 text-center mb-16">
@@ -36,11 +24,8 @@ export default function Team() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h2 className="text-blue-500 font-bold uppercase tracking-[0.2em] text-sm mb-4">Our Team</h2>
-                    <h3 className="text-4xl md:text-5xl font-black text-white mb-6">The Minds Behind</h3>
-                    <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                        Sekumpulan profesional berdedikasi tinggi yang berkomitmen untuk memberikan hasil terbaik bagi setiap klien.
-                    </p>
+                    <h2 className="text-blue-500 font-bold uppercase tracking-[0.2em] text-sm mb-4">{content.teamSubtitle}</h2>
+                    <h3 className="text-4xl md:text-5xl font-black text-white mb-6">{content.teamTitle}</h3>
                 </motion.div>
             </div>
 

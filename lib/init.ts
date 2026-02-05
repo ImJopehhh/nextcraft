@@ -86,6 +86,42 @@ export async function initializeDatabase() {
         } catch (settingsError) {
             console.error("⚠️ Global Settings initialization check failed:", settingsError);
         }
+
+        // Initialize HomePage Content
+        try {
+            const homeCheck: any[] = await prisma.$queryRaw`SELECT id FROM HomePageContent LIMIT 1`;
+            if (homeCheck.length === 0) {
+                console.log("🏠 Initializing default Home Page Content...");
+
+                await prisma.$executeRaw`
+                    INSERT INTO HomePageContent (
+                        id, 
+                        heroBadge, heroTitle, heroDescription, heroBtnPrimary, heroBtnSecondary,
+                        aboutSubtitle, aboutTitle, aboutDescription, aboutImage,
+                        featuresTitle, featuresSubtitle, featuresList,
+                        teamTitle, teamSubtitle, teamList,
+                        updatedAt
+                    ) VALUES (
+                        1, 
+                        'The Future of Digital Excellence', 
+                        'Elevate Your &bDigital Potential', 
+                        'NextCraft delivers premium digital solutions with cutting-edge technology to fuel your growth and transform your vision into reality.',
+                        'Mulai Sekarang', 'Pelajari Fitur',
+                        'About NextCraft', 'Crafting Digital Solutions That &cMatter.', 
+                        'Di NextCraft, kami percaya bahwa setiap baris kode adalah peluang untuk berinovasi. Berdiri dengan visi untuk merevolusi ekosistem digital, kami menghadirkan perpaduan sempurna antara estetika desain premium dan ketangguhan sistem backend.',
+                        'https://images.unsplash.com/photo-1522071823991-b99c223030c9',
+                        'Why Choose Us', 'Our Features',
+                        '[{"icon": "Zap", "title": "Fast Performance", "desc": "Optimized for speed and efficiency."}, {"icon": "ShieldCheck", "title": "Secure", "desc": "Enterprise-grade security standards."}, {"icon": "Globe", "title": "Scalable", "desc": "Ready to grow with your business."}]',
+                        'Meet Our Team', 'Expertise',
+                        '[{"name": "Alex Admin", "role": "CEO", "image": "https://i.pravatar.cc/150?u=a"}, {"name": "Sarah Dev", "role": "CTO", "image": "https://i.pravatar.cc/150?u=s"}]',
+                        NOW()
+                    )
+                `;
+                console.log("✅ Home Page Content initialized.");
+            }
+        } catch (homeError) {
+            console.error("⚠️ Home Page Content initialization check failed:", homeError);
+        }
     } catch (error) {
         console.error("❌ Database initialization failed:", error);
     }

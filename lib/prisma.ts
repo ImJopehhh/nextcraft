@@ -21,14 +21,17 @@ const getDatabaseUrl = () => {
     const encodedPass = encodeURIComponent(pass.replace(/["']/g, "").trim());
     const url = `mysql://${fUser}:${encodedPass}@${fHost}:${fPort}/${fName}`;
 
-    console.log("----------------------------------------");
-    console.log("🚀 PRISMA: Constructing Database Connection");
-    console.log(`📡 Target: ${fHost}:${fPort}`);
-    console.log(`👤 User: ${fUser}`);
-    console.log(`📂 Database: ${fName}`);
-    // DO NOT log the full URL for security, even masked, let's just confirm it's built
-    console.log("✅ Connection string constructed and sanitized.");
-    console.log("----------------------------------------");
+    const isDebug = process.env.DEBUG === "true";
+
+    if (isDebug) {
+        console.log("----------------------------------------");
+        console.log("🚀 PRISMA: Constructing Database Connection");
+        console.log(`📡 Target: ${fHost}:${fPort}`);
+        console.log(`👤 User: ${fUser}`);
+        console.log(`📂 Database: ${fName}`);
+        console.log("✅ Connection string constructed and sanitized.");
+        console.log("----------------------------------------");
+    }
 
     return url;
 };
@@ -37,6 +40,7 @@ const databaseUrl = getDatabaseUrl();
 process.env.DATABASE_URL = databaseUrl;
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
+const isDebug = process.env.DEBUG === "true";
 
 export const prisma =
     globalForPrisma.prisma ||
@@ -46,7 +50,7 @@ export const prisma =
                 url: databaseUrl,
             },
         },
-        log: ["error", "warn"],
+        log: isDebug ? ["query", "error", "warn"] : ["error"],
     });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
