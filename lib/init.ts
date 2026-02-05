@@ -89,6 +89,44 @@ export async function initializeDatabase() {
 
         // Initialize HomePage Content
         try {
+            let tableExists = true;
+            try {
+                await prisma.$queryRaw`SELECT 1 FROM HomePageContent LIMIT 1`;
+            } catch (e: any) {
+                // MySQL error code 1146 means table doesn't exist
+                if (e.message?.includes("1146") || e.code === "P2010" || e.message?.includes("doesn't exist")) {
+                    tableExists = false;
+                } else {
+                    throw e;
+                }
+            }
+
+            if (!tableExists) {
+                console.log("🛠️ Table 'HomePageContent' missing. Creating via Raw SQL...");
+                await prisma.$executeRawUnsafe(`
+                    CREATE TABLE IF NOT EXISTS HomePageContent (
+                        id INT PRIMARY KEY DEFAULT 1,
+                        heroBadge VARCHAR(191) NOT NULL DEFAULT 'The Future of Digital Excellence',
+                        heroTitle VARCHAR(191) NOT NULL DEFAULT 'Elevate Your &bDigital Potential',
+                        heroDescription TEXT NOT NULL,
+                        heroBtnPrimary VARCHAR(191) NOT NULL DEFAULT 'Mulai Sekarang',
+                        heroBtnSecondary VARCHAR(191) NOT NULL DEFAULT 'Pelajari Fitur',
+                        aboutSubtitle VARCHAR(191) NOT NULL DEFAULT 'About NextCraft',
+                        aboutTitle VARCHAR(191) NOT NULL DEFAULT 'Crafting Digital Solutions That &cMatter.',
+                        aboutDescription TEXT NOT NULL,
+                        aboutImage VARCHAR(191) NOT NULL DEFAULT 'https://images.unsplash.com/photo-1522071823991-b99c223030c9',
+                        featuresTitle VARCHAR(191) NOT NULL DEFAULT 'Why Choose Us',
+                        featuresSubtitle VARCHAR(191) NOT NULL DEFAULT 'Our Features',
+                        featuresList JSON NOT NULL,
+                        teamTitle VARCHAR(191) NOT NULL DEFAULT 'Meet Our Team',
+                        teamSubtitle VARCHAR(191) NOT NULL DEFAULT 'Expertise',
+                        teamList JSON NOT NULL,
+                        updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+                    ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+                `);
+                console.log("✅ Table 'HomePageContent' created.");
+            }
+
             const homeCheck: any[] = await prisma.$queryRaw`SELECT id FROM HomePageContent LIMIT 1`;
             if (homeCheck.length === 0) {
                 console.log("🏠 Initializing default Home Page Content...");
@@ -120,7 +158,7 @@ export async function initializeDatabase() {
                 console.log("✅ Home Page Content initialized.");
             }
         } catch (homeError) {
-            console.error("⚠️ Home Page Content initialization check failed:", homeError);
+            console.error("⚠️ Home Page Content initialization failed:", homeError);
         }
     } catch (error) {
         console.error("❌ Database initialization failed:", error);
