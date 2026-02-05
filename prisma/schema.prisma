@@ -40,3 +40,22 @@ model GlobalSettings {
   siteFavicon     String   @default("/assets/nextcraftlogo.jpg")
   updatedAt       DateTime @updatedAt
 }
+
+model HomePageContent {
+  id              Int      @id @default(1)
+  
+  // Hero Section
+  heroBadge       String   @default("The Future of Digital Excellence")
+  heroTitle       String   @default("Elevate Your &bDigital Potential")
+  heroDescription String   @db.Text
+  heroBtnPrimary  String   @default("Mulai Sekarang")
+  heroBtnSecondary String  @default("Pelajari Fitur")
+  
+  // About Section
+  aboutSubtitle   String   @default("About NextCraft")
+  aboutTitle      String   @default("Crafting Digital Solutions That &cMatter.")
+  aboutDescription String  @db.Text
+  aboutImage      String   @default("https://images.unsplash.com/photo-1522071823991-b99c223030c9")
+  
+  updatedAt       DateTime @updatedAt
+}

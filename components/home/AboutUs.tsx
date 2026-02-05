@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion";
 import { ShieldCheck, Zap, Globe } from "lucide-react";
+import { BcodeParser } from "@/lib/bcode";
 
-export default function AboutUs() {
+export default function AboutUs({ content }: { content: any }) {
+    if (!content) return null;
+
     const stats = [
         { icon: <Zap className="text-blue-500" />, label: "Fast Performance", value: "99.9%" },
         { icon: <ShieldCheck className="text-blue-500" />, label: "Security First", value: "Enterprise" },
@@ -20,14 +23,12 @@ export default function AboutUs() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <h2 className="text-blue-500 font-bold uppercase tracking-[0.2em] text-sm mb-4">About NextCraft</h2>
+                        <h2 className="text-blue-500 font-bold uppercase tracking-[0.2em] text-sm mb-4">{content.aboutSubtitle}</h2>
                         <h3 className="text-4xl md:text-5xl font-black text-white mb-8 leading-tight">
-                            Crafting Digital Solutions That <span className="text-blue-500 text-shadow-glow">Matter.</span>
+                            <BcodeParser text={content.aboutTitle} />
                         </h3>
                         <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                            Di NextCraft, kami percaya bahwa setiap baris kode adalah peluang untuk berinovasi.
-                            Berdiri dengan visi untuk merevolusi ekosistem digital, kami menghadirkan perpaduan
-                            sempurna antara estetika desain premium dan ketangguhan sistem backend.
+                            <BcodeParser text={content.aboutDescription} />
                         </p>
 
                         <div className="grid sm:grid-cols-3 gap-6 mb-10">
@@ -54,7 +55,7 @@ export default function AboutUs() {
                     >
                         <div className="relative z-10 rounded-3xl overflow-hidden border border-blue-500/20 shadow-2xl shadow-blue-900/20">
                             <img
-                                src="https://images.unsplash.com/photo-1522071823991-b99c223030c9?auto=format&fit=crop&q=80&w=1000"
+                                src={content.aboutImage}
                                 alt="Our Team Working"
                                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                             />

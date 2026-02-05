@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { BcodeParser } from "@/lib/bcode";
 
-export default function Hero() {
+export default function Hero({ content }: { content: any }) {
+    if (!content) return null;
+
     return (
         <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
             {/* Background Glows */}
@@ -18,7 +21,7 @@ export default function Hero() {
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-900/20 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8 backdrop-blur-sm"
                 >
                     <Sparkles size={16} />
-                    <span>The Future of Digital Excellence</span>
+                    <span>{content.heroBadge}</span>
                 </motion.div>
 
                 <motion.h1
@@ -27,10 +30,7 @@ export default function Hero() {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[1.1] mb-8 tracking-tight"
                 >
-                    Elevate Your <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600">
-                        Digital Potential
-                    </span>
+                    <BcodeParser text={content.heroTitle} />
                 </motion.h1>
 
                 <motion.p
@@ -39,8 +39,7 @@ export default function Hero() {
                     transition={{ duration: 0.6, delay: 0.4 }}
                     className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
                 >
-                    NextCraft delivers premium digital solutions with cutting-edge technology
-                    to fuel your growth and transform your vision into reality.
+                    <BcodeParser text={content.heroDescription} />
                 </motion.p>
 
                 <motion.div
@@ -50,13 +49,13 @@ export default function Hero() {
                     className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
                     <button className="group relative px-8 py-4 bg-blue-600 rounded-2xl font-bold text-white transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(37,99,235,0.4)] flex items-center gap-3 overflow-hidden">
-                        <span className="relative z-10">Mulai Sekarang</span>
+                        <span className="relative z-10">{content.heroBtnPrimary}</span>
                         <ArrowRight size={20} className="relative z-10 group-hover:translate-x-1 transition-transform" />
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
 
                     <button className="px-8 py-4 bg-slate-800/50 hover:bg-slate-800 rounded-2xl font-bold text-slate-300 transition-all border border-slate-700/50 backdrop-blur-sm">
-                        Pelajari Fitur
+                        {content.heroBtnSecondary}
                     </button>
                 </motion.div>
 
