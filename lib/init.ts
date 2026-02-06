@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 import { execSync } from "child_process";
+import pkg from "../package.json";
 
 /**
  * Ensures all database tables exist.
@@ -38,14 +39,14 @@ async function ensureTablesExist() {
 }
 
 const banner = `
-\x1b[94m   _   _               _     \x1b[97m  _____                __ _   
-\x1b[94m  | \\ | |             | |    \x1b[97m / ____|             / _| |  
+\x1b[94m   _   _              _     \x1b[97m  _____              __  _   
+\x1b[94m  | \\ | |            | |    \x1b[97m/ ____|             / _ | |  
 \x1b[94m  |  \\| |  ___ __  __| |_   \x1b[97m| |     _ __  __ _  | |_| |_ 
 \x1b[94m  | . \` | / _ \\\\ \\/ /| __|  \x1b[97m| |    | '__|/ _\` | |  _| __|
 \x1b[94m  | |\\  ||  __/ >  < | |_   \x1b[97m| |____| |  | (_| | | | | |_ 
 \x1b[94m  |_| \\_| \\___|/_/\\_\\ \\__|  \x1b[97m \\_____|_|   \\__,_| |_|  \\__|
 \x1b[0m
-\x1b[1;94mNext\x1b[97mCraft\x1b[0m \x1b[1;32mv1.0.0 Activated!\x1b[0m
+\x1b[1;94mNext\x1b[97mCraft\x1b[0m \x1b[1;32mv${pkg.version} Activated!\x1b[0m
 `;
 
 export async function initializeDatabase() {
@@ -60,7 +61,7 @@ export async function initializeDatabase() {
         const adminCount = await prisma.admin.count();
 
         if (adminCount === 0) {
-            console.log("🚀 No admin found. Initializing default Webmaster...");
+            console.log(" No admin found. Initializing default Webmaster...");
 
             const email = "admin@next.craft";
             const username = "webmaster";
@@ -78,8 +79,6 @@ export async function initializeDatabase() {
             });
 
             console.log(`✅ Default Webmaster created: ${username} (${email})`);
-        } else {
-            console.log("📌 Database already has admin accounts. Skipping admin initialization.");
         }
 
         // Initialize Global Settings using raw query to bypass type errors if client not regenerated

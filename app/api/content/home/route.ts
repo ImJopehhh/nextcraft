@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { verifyCsrfToken } from "@/lib/security";
+import { homeContentSchema } from "@/lib/schemas";
 
 export async function GET() {
     try {
@@ -39,7 +41,25 @@ export async function GET() {
 
 export async function PUT(req: Request) {
     try {
+        // CSRF Protection
+        if (!verifyCsrfToken(req)) {
+            return NextResponse.json(
+                { error: "CSRF validation failed" },
+                { status: 403 }
+            );
+        }
+
         const body = await req.json();
+
+        // Validate with Zod
+        const validation = homeContentSchema.safeParse(body);
+        if (!validation.success) {
+            return NextResponse.json(
+                { error: "Validasi gagal", issues: validation.error.issues },
+                { status: 400 }
+            );
+        }
+
         const {
             heroBadge, heroTitle, heroDescription, heroBtnPrimary, heroBtnSecondary,
             aboutSubtitle, aboutTitle, aboutDescription, aboutImage,

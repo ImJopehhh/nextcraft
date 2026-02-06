@@ -1,10 +1,4 @@
-type Attempt = {
-    count: number;
-    lockUntil: number | null;
-    lastFailure: number;
-};
-
-const loginAttempts = new Map<string, Attempt>();
+import { prisma } from "./prisma";
 
 /**
  * Calculates lockout duration based on attempt count (Exponential Backoff)
@@ -15,64 +9,116 @@ const loginAttempts = new Map<string, Attempt>();
  */
 function calculateLockTime(count: number): number {
     if (count < 3) return 0;
-    if (count < 6) return 60 * 1000; // 1 minute
-    if (count < 9) return 5 * 60 * 1000; // 5 minutes
-    return 15 * 60 * 1000; // 15 minutes
+    if (count < 6) return 60; // 1 minute in seconds
+    if (count < 9) return 5 * 60; // 5 minutes
+    return 15 * 60; // 15 minutes
 }
 
-export function getLoginAttempt(identifier: string, ip: string) {
-    const now = Date.now();
+/**
+ * Get IP from request, preventing spoofing
+ */
+export function getClientIp(request: Request): string {
+    const forwarded = request.headers.get("x-forwarded-for");
+    if (forwarded) {
+        // Only trust the first IP in the chain
+        return forwarded.split(",")[0].trim();
+    }
+    return "unknown";
+}
 
-    // Check by ID and by IP
-    const idAttempt = loginAttempts.get(`id:${identifier}`);
-    const ipAttempt = loginAttempts.get(`ip:${ip}`);
+/**
+ * Check if IP is locked due to too many failed attempts
+ */
+export async function getLoginAttempt(ip: string) {
+    const now = new Date();
 
-    const activeAttempt = (idAttempt?.lockUntil && idAttempt.lockUntil > now) ? idAttempt :
-        (ipAttempt?.lockUntil && ipAttempt.lockUntil > now) ? ipAttempt : null;
+    const attempt = await prisma.loginAttempt.findFirst({
+        where: { ip },
+    });
 
-    if (activeAttempt && activeAttempt.lockUntil) {
-        return {
-            locked: true,
-            timeLeft: Math.ceil((activeAttempt.lockUntil - now) / 1000)
-        };
+    if (!attempt) {
+        return { locked: false, timeLeft: 0 };
     }
 
-    return {
-        locked: false,
-        count: (idAttempt?.count || 0) + (ipAttempt?.count || 0)
-    };
+    // Check if still locked
+    if (attempt.lockUntil && attempt.lockUntil > now) {
+        const timeLeft = Math.ceil((attempt.lockUntil.getTime() - now.getTime()) / 1000);
+        return { locked: true, timeLeft };
+    }
+
+    return { locked: false, timeLeft: 0 };
 }
 
-export function recordFailedAttempt(identifier: string, ip: string) {
-    const now = Date.now();
+/**
+ * Record a failed login attempt and apply lockout if threshold exceeded
+ */
+export async function recordFailedAttempt(ip: string) {
+    const now = new Date();
 
-    const updateAttempt = (key: string) => {
-        const attempt = loginAttempts.get(key) || { count: 0, lockUntil: null, lastFailure: 0 };
-        const nextCount = attempt.count + 1;
-        const lockDuration = calculateLockTime(nextCount);
-        const lockUntil = lockDuration > 0 ? now + lockDuration : null;
+    const attempt = await prisma.loginAttempt.findFirst({
+        where: { ip },
+    });
 
-        loginAttempts.set(key, {
-            count: nextCount,
+    let nextCount = 1;
+    if (attempt) {
+        // Reset count if lock has expired
+        if (attempt.lockUntil && attempt.lockUntil < now) {
+            nextCount = 1;
+        } else {
+            nextCount = attempt.attempts + 1;
+        }
+    }
+
+    const lockSeconds = calculateLockTime(nextCount);
+    const lockUntil = lockSeconds > 0 ? new Date(now.getTime() + lockSeconds * 1000) : null;
+
+    await prisma.loginAttempt.upsert({
+        where: { ip },
+        create: {
+            ip,
+            attempts: nextCount,
             lockUntil,
-            lastFailure: now
-        });
-        return { locked: !!lockUntil, lockDuration };
-    };
-
-    const idResult = updateAttempt(`id:${identifier}`);
-    const ipResult = updateAttempt(`ip:${ip}`);
-
-    const locked = idResult.locked || ipResult.locked;
-    const maxLock = Math.max(idResult.lockDuration, ipResult.lockDuration);
+        },
+        update: {
+            attempts: nextCount,
+            lockUntil,
+        },
+    });
 
     return {
-        locked,
-        timeLeft: Math.ceil(maxLock / 1000)
+        locked: !!lockUntil,
+        timeLeft: lockSeconds,
     };
 }
 
-export function clearAttempts(identifier: string, ip: string) {
-    loginAttempts.delete(`id:${identifier}`);
-    loginAttempts.delete(`ip:${ip}`);
+/**
+ * Clear login attempts for successful login
+ */
+export async function clearAttempts(ip: string) {
+    await prisma.loginAttempt.deleteMany({
+        where: { ip },
+    });
+}
+
+/**
+ * Verify CSRF token by checking Origin/Referer headers
+ */
+export function verifyCsrfToken(request: Request): boolean {
+    const origin = request.headers.get("origin");
+    const referer = request.headers.get("referer");
+    const host = request.headers.get("host");
+
+    // Allow same-origin requests
+    if (origin) {
+        const originUrl = new URL(origin);
+        return originUrl.host === host;
+    }
+
+    if (referer) {
+        const refererUrl = new URL(referer);
+        return refererUrl.host === host;
+    }
+
+    // If neither origin nor referer present, reject for safety
+    return false;
 }

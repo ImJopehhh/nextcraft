@@ -2,27 +2,32 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import { getLoginAttempt, recordFailedAttempt, clearAttempts } from "@/lib/security";
+import { getLoginAttempt, recordFailedAttempt, clearAttempts, getClientIp } from "@/lib/security";
+import { loginSchema } from "@/lib/schemas";
 
 export async function POST(req: Request) {
     try {
-        const { identifier, password, rememberMe } = await req.json();
-        const ip = req.headers.get("x-forwarded-for") || "unknown";
+        const body = await req.json();
 
-        if (!identifier || !password) {
+        // Validate input with Zod
+        const validation = loginSchema.safeParse(body);
+        if (!validation.success) {
             return NextResponse.json(
-                { message: "Credentials required" },
+                { message: "Data tidak valid", errors: validation.error.issues },
                 { status: 400 }
             );
         }
 
-        // In-Memory Rate Limiting Logic (IP + Identifier)
-        const attempt = getLoginAttempt(identifier, ip);
+        const { identifier, password, rememberMe } = validation.data;
+        const ip = getClientIp(req);
+
+        // Database-backed rate limiting
+        const attempt = await getLoginAttempt(ip);
 
         if (attempt.locked) {
             return NextResponse.json(
                 {
-                    message: `Too many attempts. Try again in ${attempt.timeLeft} seconds.`,
+                    message: `Terlalu banyak percobaan login. Coba lagi dalam ${attempt.timeLeft} detik.`,
                     timeLeft: attempt.timeLeft
                 },
                 { status: 429 }
@@ -41,22 +46,22 @@ export async function POST(req: Request) {
         const isPasswordValid = await bcrypt.compare(password, passwordToCompare);
 
         if (!admin || !isPasswordValid) {
-            const { locked, timeLeft } = recordFailedAttempt(identifier, ip);
-            const message = locked ? `Too many attempts. Locked for ${timeLeft}s.` : "Invalid credentials";
+            const { locked, timeLeft } = await recordFailedAttempt(ip);
+            const message = locked ? `Terlalu banyak percobaan. Terkunci selama ${timeLeft} detik.` : "Kredensial tidak valid";
             return NextResponse.json({ message, timeLeft: locked ? timeLeft : undefined }, { status: 401 });
         }
 
         // Success - Clear attempts and create session
-        clearAttempts(identifier, ip);
+        await clearAttempts(ip);
 
         await createSession({
             id: admin.id,
             email: admin.email,
             username: admin.username,
             role: admin.role,
-        }, rememberMe);
+        }, rememberMe || false);
 
-        return NextResponse.json({ message: "Login successful", role: admin.role });
+        return NextResponse.json({ message: "Login berhasil", role: admin.role });
     } catch (err) {
         console.error("Login Error:", err);
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });

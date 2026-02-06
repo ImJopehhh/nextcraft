@@ -1,23 +1,30 @@
-import jwt from "jsonwebtoken";
+import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-// Generate a random secret on every server start to make sessions volatile
-const VOLATILE_SECRET = process.env.NODE_ENV === "production"
-    ? Math.random().toString(36).substring(2) + Date.now().toString(36)
-    : "dev_volatile_secret_2026"; // Consistent in dev for hot-reloading stability
+const SECRET_KEY = process.env.JWT_SECRET;
+const key = new TextEncoder().encode(SECRET_KEY);
+
+if (!SECRET_KEY && process.env.NODE_ENV === "production") {
+    throw new Error("FATAL: JWT_SECRET is not defined in production environment.");
+}
 
 export type JWTPayload = {
     id: string;
     email: string;
     username: string;
     role: string;
+    [key: string]: any;
 };
 
 export async function createSession(payload: JWTPayload, rememberMe: boolean = false) {
-    const expiresIn = (rememberMe ? "7d" : "1d") as jwt.SignOptions["expiresIn"];
+    const expirationTime = rememberMe ? "7d" : "1d";
     const maxAge = rememberMe ? 60 * 60 * 24 * 7 : 60 * 60 * 24;
 
-    const token = jwt.sign(payload, VOLATILE_SECRET, { expiresIn });
+    const token = await new SignJWT(payload)
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime(expirationTime)
+        .sign(key);
 
     const cookieStore = await cookies();
     cookieStore.set("session", token, {
@@ -35,7 +42,10 @@ export async function getSession(): Promise<JWTPayload | null> {
     if (!token) return null;
 
     try {
-        return jwt.verify(token, VOLATILE_SECRET) as JWTPayload;
+        const { payload } = await jwtVerify(token, key, {
+            algorithms: ["HS256"],
+        });
+        return payload as JWTPayload;
     } catch (err) {
         return null;
     }

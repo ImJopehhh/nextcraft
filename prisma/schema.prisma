@@ -69,3 +69,13 @@ model HomePageContent {
 
   updatedAt       DateTime @updatedAt
 }
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  attempts  Int      @default(1)
+  lockUntil DateTime?
+  updatedAt DateTime @updatedAt
+
+  @@index([ip])
+}
