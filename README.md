@@ -1,6 +1,6 @@
-<div align="center>
+<div align="center">
 
-# 🚀 NextCraft
+# 🚀 NextCraft - The Next Generation of FullStack
 
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
