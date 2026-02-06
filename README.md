@@ -7,7 +7,7 @@
 [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
 [![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![Version](https://img.shields.io/badge/Version-0.1.0-FF4500?style=for-the-badge)](https://github.com/ImJopehhh/nextcraft)
+[![Version](https://img.shields.io/badge/Version-1.0.0-FF4500?style=for-the-badge)](https://github.com/ImJopehhh/nextcraft)
 
 **NextCraft** adalah *premium boilerplate* dan *web framework* yang dirancang untuk membangun aplikasi web modern berskala *enterprise* dengan kecepatan dan keindahan visual maksimal. Dikembangkan menggunakan **Next.js 15 App Router**, framework ini menggabungkan performa backend yang tangguh dengan estetika frontend kelas dunia.
 
