@@ -68,7 +68,6 @@ export default function HomePageEditor() {
             if (res.ok) {
                 const data = await res.json();
 
-                // Parse lists if they come as strings
                 const preparedData = {
                     ...data,
                     featuresList: typeof data.featuresList === 'string' ? JSON.parse(data.featuresList) : (data.featuresList || []),

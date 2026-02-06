@@ -37,7 +37,21 @@ async function ensureTablesExist() {
     }
 }
 
+const banner = `
+\x1b[94m   _   _               _     \x1b[97m  _____                __ _   
+\x1b[94m  | \\ | |             | |    \x1b[97m / ____|             / _| |  
+\x1b[94m  |  \\| |  ___ __  __| |_   \x1b[97m| |     _ __  __ _  | |_| |_ 
+\x1b[94m  | . \` | / _ \\\\ \\/ /| __|  \x1b[97m| |    | '__|/ _\` | |  _| __|
+\x1b[94m  | |\\  ||  __/ >  < | |_   \x1b[97m| |____| |  | (_| | | | | |_ 
+\x1b[94m  |_| \\_| \\___|/_/\\_\\ \\__|  \x1b[97m \\_____|_|   \\__,_| |_|  \\__|
+\x1b[0m
+\x1b[1;94mNext\x1b[97mCraft\x1b[0m \x1b[1;32mv1.0.0 Activated!\x1b[0m
+`;
+
 export async function initializeDatabase() {
+    console.log(banner);
+    console.log("📡 Connecting to database...");
+
     try {
         // First, ensure all tables exist
         await ensureTablesExist();
@@ -160,6 +174,8 @@ export async function initializeDatabase() {
         } catch (homeError) {
             console.error("⚠️ Home Page Content initialization failed:", homeError);
         }
+
+        console.log("✅ Database ready");
     } catch (error) {
         console.error("❌ Database initialization failed:", error);
     }
