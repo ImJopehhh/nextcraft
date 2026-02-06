@@ -72,7 +72,7 @@ model HomePageContent {
 
 model LoginAttempt {
   id        String   @id @default(cuid())
-  ip        String
+  ip        String   @unique
   attempts  Int      @default(1)
   lockUntil DateTime?
   updatedAt DateTime @updatedAt
