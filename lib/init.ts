@@ -179,91 +179,112 @@ export async function initializeDatabase() {
             const pagesToSeed = [
                 {
                     slug: "server-status",
-                    title: "Status Server",
-                    description: "Pantau status real-time infrastruktur NextCraft.",
+                    title: "Status Network",
+                    description: "Pantau ketersediaan node game NextCraft.",
                     content: {
                         hero: {
-                            badge: "Real-time Monitoring",
+                            badge: "Network Monitoring",
                             title: "Server &bStatus",
-                            desc: "Infrastruktur kami dipantau 24/7 untuk memastikan performa maksimal dan latensi rendah bagi seluruh pengguna.",
+                            desc: "Infrastruktur kami menggunakan optimasi latensi tinggi untuk menjamin pengalaman bermain tanpa lag di seluruh region Indonesia.",
                         },
                         stats: [
-                            { label: "Global Uptime", value: "99.9%", status: "healthy" },
-                            { label: "Active Nodes", value: "12", status: "online" },
-                            { label: "Latensi Rata-rata", value: "15ms", status: "good" }
+                            { label: "Network Uptime", value: "99.9%", status: "healthy" },
+                            { label: "Pemain Online", value: "142/500", status: "online" },
+                            { label: "Ping Rata-rata", value: "12ms", status: "good" }
                         ],
                         nodes: [
-                            { name: "Node Java (Utama)", status: "Online", load: "12%", type: "High Performance" },
-                            { name: "Node Database", status: "Online", load: "5%", type: "Ultra Secure" },
-                            { name: "Node Storage", status: "Online", load: "28%", type: "Scalable" }
+                            { name: "Survival Season 2", status: "Online", load: "18%", type: "SMP - 1.21.x" },
+                            { name: "Skyblock Legacy", status: "Online", load: "42%", type: "Economy - 1.20.x" },
+                            { name: "Lobby Utama", status: "Online", load: "5%", type: "Proxy Hub" }
                         ]
                     }
                 },
                 {
                     slug: "server-rules",
-                    title: "Peraturan Server",
-                    description: "Panduan etika dan aturan bermain di ekosistem NextCraft.",
+                    title: "Aturan Bermain",
+                    description: "Konstitusi dan etika di komunitas NextCraft.",
                     content: {
                         hero: {
                             badge: "Fair Play Policy",
                             title: "Server &cRules",
-                            desc: "Kami menjunjung tinggi sportivitas dan rasa hormat. Pastikan Anda memahami aturan kami sebelum memulai perjalanan.",
+                            desc: "Komunitas yang hebat berawal dari rasa saling menghargai. Baca dan patuhi aturan kami untuk menghindari sanksi in-game.",
                         },
                         rules: [
-                            { category: "General", items: ["Respect all players", "No offensive language", "No spamming in chat"] },
-                            { category: "Gameplay", items: ["No hacking or cheating", "No exploiting bugs", "Fair trade only"] },
-                            { category: "Security", items: ["Keep your account safe", "Report suspicious activity", "No advertising other servers"] }
+                            { category: "Umum", items: ["Hargai seluruh staf dan sesama pemain", "Dilarang rasisme, seksisme, atau pelecehan", "Dilarang spamming atau flood chat"] },
+                            { category: "Gameplay", items: ["Dilarang keras menggunakan cheat/client hack", "Dilarang melakukan eksploitasi bug/glitch", "Griefing tanpa izin dilarang (Survival)"] },
+                            { category: "Promosi", items: ["Dilarang mempromosikan server lain", "Dilarang melakukan transaksi RMT ilegal", "Gunakan channel yang sesuai untuk jual beli"] }
+                        ]
+                    }
+                },
+                {
+                    slug: "server-join",
+                    title: "Gabung Sekarang",
+                    description: "Panduan cara masuk ke dunia NextCraft.",
+                    content: {
+                        hero: {
+                            badge: "Instant Join",
+                            title: "How to &aJoin",
+                            desc: "Sudah siap memulai petualangan? Berikut adalah detail server yang Anda butuhkan untuk terhubung.",
+                        },
+                        connection: {
+                            ip: "play.nextcraft.net",
+                            version: "1.20.1 - 1.21.x (Java Edition)",
+                            discord: "discord.gg/nextcraft"
+                        },
+                        steps: [
+                            { title: "Buka Minecraft", desc: "Gunakan launcher pilihan Anda (Original direkomendasikan)." },
+                            { title: "Add Server", desc: "Klik Multiplayer -> Add Server, masukkan IP play.nextcraft.net." },
+                            { title: "Mulai Bermain!", desc: "Double-click server NextCraft di daftar server Anda." }
                         ]
                     }
                 },
                 {
                     slug: "support-faq",
-                    title: "Pertanyaan Umum (FAQ)",
-                    description: "Jawaban cepat untuk pertanyaan yang paling sering diajukan.",
+                    title: "Pusat Jawaban",
+                    description: "Jawaban instan untuk pertanyaan umum seputar Minecraft.",
                     content: {
                         hero: {
                             badge: "Knowledge Base",
-                            title: "Frequently Asked &dQuestions",
-                            desc: "Temukan solusi instan untuk kendala Anda melalui koleksi tanya jawab yang telah kami siapkan.",
+                            title: "FAQ &dSupport",
+                            desc: "Bingung cara klaim lahan atau cara upgrade rank? Semua jawabannya ada di sini.",
                         },
                         faqs: [
-                            { q: "Bagaimana cara bergabung ke server?", a: "Anda dapat melihat panduan lengkap di halaman Join Server. Pastikan versi client Anda sesuai." },
-                            { q: "Lupa password akun?", a: "Gunakan fitur reset password di halaman login atau hubungi tim support kami melalui tiket." },
-                            { q: "Apakah server ini gratis?", a: "Ya, kami menyediakan akses gratis dengan fitur opsional untuk mendukung pengembangan server." }
+                            { q: "Server versi berapa?", a: "Server kami mendukung versi 1.20.1 hingga versi terbaru (Java Edition)." },
+                            { q: "Bagaimana cara klaim lahan (GriefPrevention)?", a: "Gunakan Golden Shovel untuk menandai area. Ketik /claim untuk info lebih lanjut." },
+                            { q: "Rank donasi itu permanen?", a: "Ya, seluruh rank donasi di NextCraft bersifat permanen kecuali ditentukan lain." }
                         ]
                     }
                 },
                 {
-                    slug: "server-stats",
-                    title: "Statistik Server",
-                    description: "Analisis mendalam performa dan populasi NextCraft.",
+                    slug: "community-events",
+                    title: "Event Komunitas",
+                    description: "Jadwal dan detail turnamen in-game NextCraft.",
                     content: {
                         hero: {
-                            badge: "Deep Analytics",
-                            title: "Server &eStats",
-                            desc: "Data tidak pernah berbohong. Lihat bagaimana komunitas kami tumbuh dan berkembang setiap harinya.",
+                            badge: "Join the Fun",
+                            title: "Server &6Events",
+                            desc: "Dari PvP Tournament hingga Build Battle, jangan lewatkan kesempatan memenangkan hadiah eksklusif.",
                         },
-                        charts: [
-                            { label: "Pemain Unik", value: "12,450", growth: "+15%" },
-                            { label: "Total Proyek", value: "892", growth: "+5%" },
-                            { label: "Waktu Bermain Rata-rata", value: "4.5 jam/hari", growth: "+10%" }
+                        events: [
+                            { title: "PvP Duel Master", date: "Setiap Sabtu, 20:00 WIB", prize: "Rank VIP (30 Hari)" },
+                            { title: "Build Battle Season 5", date: "Minggu Depan", prize: "1.000.000 In-game Coins" }
                         ]
                     }
                 },
                 {
-                    slug: "support-help",
-                    title: "Help Center",
-                    description: "Pusat bantuan dan panduan teknis NextCraft.",
+                    slug: "leaderboard-top-players",
+                    title: "Pemain Terbaik",
+                    description: "Hall of Fame pemain paling aktif dan berprestasi.",
                     content: {
                         hero: {
-                            badge: "Support Hub",
-                            title: "Help &aCenter",
-                            desc: "Butuh bantuan? Tim ahli kami siap membantu Anda menyelesaikan setiap kendala teknis maupun non-teknis.",
+                            badge: "Hall of Fame",
+                            title: "Top &ePlayers",
+                            desc: "Dedikasi dan keahlian tinggi. Inilah para pemain yang mendominasi dunia NextCraft.",
                         },
-                        categories: [
-                            { title: "Mulai Bermain", icon: "Rocket", links: ["Instalasi Client", "Koneksi ke Server", "Membuat Akun"] },
-                            { title: "Keamanan Akun", icon: "Shield", links: ["Ganti Password", "Two-Factor Auth", "Pemulihan Akun"] },
-                            { title: "Donasi & Rank", icon: "Gem", links: ["Cara Donasi", "Benefit Rank", "Metode Pembayaran"] }
+                        rankings: [
+                            { name: "SkyLord_99", stat: "1.240 Jam", category: "Playtime" },
+                            { name: "PvPMaster", stat: "450 Kills", category: "PvP Kills" },
+                            { name: "Architect", stat: "Level 120", category: "Building Level" }
                         ]
                     }
                 }
