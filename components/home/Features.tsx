@@ -10,8 +10,6 @@ const ICON_MAP: Record<string, any> = {
 export default function Features({ content }: { content: any }) {
     if (!content) return null;
 
-    // Parse logic handling: API returns object if db driver handles json or string if not.
-    // We handle both safely.
     let features: any[] = [];
     try {
         features = typeof content.featuresList === 'string'

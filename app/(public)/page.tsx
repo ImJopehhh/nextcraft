@@ -3,14 +3,12 @@ import HomeClient from "@/components/home/HomeClient";
 
 export const dynamic = "force-dynamic";
 
-// Server Component
 export default async function Home() {
   let content;
   try {
     const data: any[] = await prisma.$queryRaw`SELECT * FROM HomePageContent LIMIT 1`;
     content = data[0];
   } catch (e) {
-    // Fallback if DB not ready or empty
     content = {
       heroBadge: "The Future of Digital Excellence",
       heroTitle: "Elevate Your &bDigital Potential",

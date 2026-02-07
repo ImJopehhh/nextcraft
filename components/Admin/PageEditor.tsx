@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import {
     Save,
     ArrowLeft,
@@ -9,8 +9,7 @@ import {
     Code,
     Info,
     AlertCircle,
-    CheckCircle2,
-    Undo2
+    CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,8 +17,12 @@ import { useToast } from "@/context/ToastContext";
 import GlassContainer from "@/components/UI/Premium/GlassContainer";
 import VisualBuilder from "@/components/Admin/VisualBuilder";
 
-export default function PageEditor({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = use(params);
+interface PageEditorProps {
+    slug: string;
+    backUrl: string;
+}
+
+export default function PageEditor({ slug, backUrl }: PageEditorProps) {
     const { showToast } = useToast();
     const router = useRouter();
     const [pageData, setPageData] = useState<any>(null);
@@ -44,9 +47,9 @@ export default function PageEditor({ params }: { params: Promise<{ slug: string 
             })
             .catch(() => {
                 showToast("Failed to load page content", "error");
-                router.push("/admin/interface/pages");
+                router.push(backUrl);
             });
-    }, [slug]);
+    }, [slug, backUrl, showToast, router]);
 
     const handleSave = async () => {
         try {
@@ -101,7 +104,7 @@ export default function PageEditor({ params }: { params: Promise<{ slug: string 
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                    <Link href="/admin/interface/pages" className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-all">
+                    <Link href={backUrl} className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-all">
                         <ArrowLeft size={18} />
                     </Link>
                     <div>
