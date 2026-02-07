@@ -120,6 +120,24 @@ export default async function ServerPage({ params }: { params: Promise<{ slug: s
                         </div>
                     </div>
                 )}
+                {/* Stats Page Layout */}
+                {slug === "stats" && (
+                    <div className="space-y-12">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {content.stats?.map((stat: any, i: number) => (
+                                <GlassContainer key={i} className="p-10 text-center flex flex-col items-center group hover:border-emerald-500/30 transition-all">
+                                    <h4 className="text-white/40 text-xs font-bold uppercase tracking-[0.2em] mb-4">{stat.label}</h4>
+                                    <div className="text-4xl font-black text-white mb-2 group-hover:scale-110 transition-transform">{stat.value}</div>
+                                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${stat.status === 'growing' ? 'bg-emerald-500/10 text-emerald-500' :
+                                            stat.status === 'active' ? 'bg-blue-500/10 text-blue-400' : 'bg-white/5 text-white/30'
+                                        }`}>
+                                        {stat.status || 'Verified'}
+                                    </div>
+                                </GlassContainer>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
