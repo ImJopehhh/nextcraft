@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import HomeClient from "@/components/home/HomeClient";
 
+export const dynamic = "force-dynamic";
+
 // Server Component
 export default async function Home() {
   let content;

@@ -19,7 +19,7 @@ const getDatabaseUrl = () => {
 
     // Build URL with explicit encoding
     const encodedPass = encodeURIComponent(pass.replace(/["']/g, "").trim());
-    const url = `mysql://${fUser}:${encodedPass}@${fHost}:${fPort}/${fName}`;
+    const url = `mysql://${fUser}:${encodedPass}@${fHost}:${fPort}/${fName}?connection_limit=1&connect_timeout=10`;
 
     const isDebug = process.env.DEBUG === "true";
 
