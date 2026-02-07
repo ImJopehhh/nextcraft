@@ -79,3 +79,14 @@ model LoginAttempt {
 
   @@index([ip])
 }
+
+model PageContent {
+  id          String   @id @default(cuid())
+  slug        String   @unique // e.g., 'server-status', 'support-faq'
+  title       String
+  description String?  @db.Text
+  content     Json     // Flexible JSON structure for different page types
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+}
