@@ -90,3 +90,12 @@ model PageContent {
 
   @@index([slug])
 }
+
+model LoginLog {
+  id        String   @id @default(cuid())
+  username  String
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

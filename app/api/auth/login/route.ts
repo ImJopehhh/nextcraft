@@ -61,6 +61,16 @@ export async function POST(req: Request) {
             role: admin.role,
         }, rememberMe || false);
 
+        // Record Login Log
+        try {
+            await prisma.$executeRaw`
+                INSERT INTO LoginLog (id, username, ip, createdAt) 
+                VALUES (${Math.random().toString(36).substring(2, 15)}, ${admin.username}, ${ip}, NOW())
+            `;
+        } catch (logError) {
+            console.error("Failed to record login log:", logError);
+        }
+
         return NextResponse.json({ message: "Login berhasil", role: admin.role });
     } catch (err) {
         console.error("Login Error:", err);

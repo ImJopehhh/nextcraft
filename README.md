@@ -9,7 +9,7 @@
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Version](https://img.shields.io/badge/Version-1.0.0-FF4500?style=for-the-badge)](https://github.com/ImJopehhh/nextcraft)
 
-**NextCraft** adalah *premium boilerplate* dan *web framework* yang dirancang untuk membangun aplikasi web modern berskala *enterprise* dengan kecepatan dan keindahan visual maksimal. Dikembangkan menggunakan **Next.js 15 App Router**, framework ini menggabungkan performa backend yang tangguh dengan estetika frontend kelas dunia.
+**NextCraft** adalah *premium boilerplate* dan *web framework* yang dirancang untuk membangun aplikasi web modern berskala *enterprise* dengan kecepatan dan keindahan visual maksimal. Dikembangkan menggunakan **Next.js 16 App Router**, framework ini menggabungkan performa backend yang tangguh dengan estetika frontend kelas dunia.
 
 [Features](#core-features-) • [Installation](#-installation-steps) • [API Reference](#-api-reference) • [Database Setup](#-setup-database)
 
@@ -123,6 +123,7 @@ npm run dev
 > Akun di atas dibuat secara otomatis untuk akses awal. Segera buat akun baru dengan password yang kuat dan hapus atau ubah akun default ini saat beralih ke lingkungan produksi untuk menghindari ancaman eksploitasi.
 
 ---
+
 
 <div align="center">
   <p>Built with ❤️ by <b>NextCraft Team</b></p>

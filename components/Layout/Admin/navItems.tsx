@@ -38,6 +38,7 @@ export const adminNavigation: NavCategory[] = [
         category: "Website Interface",
         items: [
             { name: "Global Settings", icon: <Settings size={20} />, href: "/admin/interface/settings", roles: ["WEBMASTER"] },
+            { name: "SEO Settings", icon: <Globe size={20} />, href: "/admin/seo", roles: ["WEBMASTER", "ADMIN"] },
             { name: "Home Page", icon: <LayoutDashboard size={20} />, href: "/admin/interface/home", roles: ["WEBMASTER", "DEVELOPER"] },
             {
                 name: "Server Pages",
@@ -88,14 +89,12 @@ export const adminNavigation: NavCategory[] = [
                     { name: "Global Achievements", href: "/admin/interface/leaderboard/leaderboard-achievements" },
                 ]
             },
-            {
-                name: "SEO Settings", icon: <Globe size={20} />, href: "/admin/seo", roles: ["WEBMASTER", "ADMIN"]
-            },
         ]
     },
     {
         category: "System",
         items: [
+            { name: "System Log", icon: <Database size={20} />, href: "/admin/system/logs", roles: ["WEBMASTER", "DEVELOPER"] },
             { name: "Database", icon: <Database size={20} />, href: "/admin/database", roles: ["WEBMASTER", "DEVELOPER"] },
             {
                 name: "Settings", icon: <Monitor size={20} />, href: "/admin/settings", roles: ["WEBMASTER"]
