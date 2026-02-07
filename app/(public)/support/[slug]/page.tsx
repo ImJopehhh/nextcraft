@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function SupportPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    const page = await prisma.pageContent.findUnique({
+    const page = await (prisma as any).pageContent.findUnique({
         where: { slug: `support-${slug}` }
     });
 
