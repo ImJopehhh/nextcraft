@@ -270,13 +270,11 @@ export async function initializeDatabase() {
             ];
 
             for (const page of pagesToSeed) {
-                const exists = await prisma.pageContent.findUnique({
-                    where: { slug: page.slug }
-                });
+                const exists: any[] = await prisma.$queryRaw`SELECT id FROM PageContent WHERE slug = ${page.slug} LIMIT 1`;
 
-                if (!exists) {
+                if (exists.length === 0) {
                     console.log(`📄 Seeding page: ${page.slug}...`);
-                    await prisma.pageContent.create({
+                    await (prisma as any).pageContent.create({
                         data: page
                     });
                 }
