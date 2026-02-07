@@ -174,6 +174,117 @@ export async function initializeDatabase() {
             console.error("⚠️ Home Page Content initialization failed:", homeError);
         }
 
+        // Initialize Multi-Page Content (Server & Support)
+        try {
+            const pagesToSeed = [
+                {
+                    slug: "server-status",
+                    title: "Status Server",
+                    description: "Pantau status real-time infrastruktur NextCraft.",
+                    content: {
+                        hero: {
+                            badge: "Real-time Monitoring",
+                            title: "Server &bStatus",
+                            desc: "Infrastruktur kami dipantau 24/7 untuk memastikan performa maksimal dan latensi rendah bagi seluruh pengguna.",
+                        },
+                        stats: [
+                            { label: "Global Uptime", value: "99.9%", status: "healthy" },
+                            { label: "Active Nodes", value: "12", status: "online" },
+                            { label: "Latensi Rata-rata", value: "15ms", status: "good" }
+                        ],
+                        nodes: [
+                            { name: "Node Java (Utama)", status: "Online", load: "12%", type: "High Performance" },
+                            { name: "Node Database", status: "Online", load: "5%", type: "Ultra Secure" },
+                            { name: "Node Storage", status: "Online", load: "28%", type: "Scalable" }
+                        ]
+                    }
+                },
+                {
+                    slug: "server-rules",
+                    title: "Peraturan Server",
+                    description: "Panduan etika dan aturan bermain di ekosistem NextCraft.",
+                    content: {
+                        hero: {
+                            badge: "Fair Play Policy",
+                            title: "Server &cRules",
+                            desc: "Kami menjunjung tinggi sportivitas dan rasa hormat. Pastikan Anda memahami aturan kami sebelum memulai perjalanan.",
+                        },
+                        rules: [
+                            { category: "General", items: ["Respect all players", "No offensive language", "No spamming in chat"] },
+                            { category: "Gameplay", items: ["No hacking or cheating", "No exploiting bugs", "Fair trade only"] },
+                            { category: "Security", items: ["Keep your account safe", "Report suspicious activity", "No advertising other servers"] }
+                        ]
+                    }
+                },
+                {
+                    slug: "support-faq",
+                    title: "Pertanyaan Umum (FAQ)",
+                    description: "Jawaban cepat untuk pertanyaan yang paling sering diajukan.",
+                    content: {
+                        hero: {
+                            badge: "Knowledge Base",
+                            title: "Frequently Asked &dQuestions",
+                            desc: "Temukan solusi instan untuk kendala Anda melalui koleksi tanya jawab yang telah kami siapkan.",
+                        },
+                        faqs: [
+                            { q: "Bagaimana cara bergabung ke server?", a: "Anda dapat melihat panduan lengkap di halaman Join Server. Pastikan versi client Anda sesuai." },
+                            { q: "Lupa password akun?", a: "Gunakan fitur reset password di halaman login atau hubungi tim support kami melalui tiket." },
+                            { q: "Apakah server ini gratis?", a: "Ya, kami menyediakan akses gratis dengan fitur opsional untuk mendukung pengembangan server." }
+                        ]
+                    }
+                },
+                {
+                    slug: "server-stats",
+                    title: "Statistik Server",
+                    description: "Analisis mendalam performa dan populasi NextCraft.",
+                    content: {
+                        hero: {
+                            badge: "Deep Analytics",
+                            title: "Server &eStats",
+                            desc: "Data tidak pernah berbohong. Lihat bagaimana komunitas kami tumbuh dan berkembang setiap harinya.",
+                        },
+                        charts: [
+                            { label: "Pemain Unik", value: "12,450", growth: "+15%" },
+                            { label: "Total Proyek", value: "892", growth: "+5%" },
+                            { label: "Waktu Bermain Rata-rata", value: "4.5 jam/hari", growth: "+10%" }
+                        ]
+                    }
+                },
+                {
+                    slug: "support-help",
+                    title: "Help Center",
+                    description: "Pusat bantuan dan panduan teknis NextCraft.",
+                    content: {
+                        hero: {
+                            badge: "Support Hub",
+                            title: "Help &aCenter",
+                            desc: "Butuh bantuan? Tim ahli kami siap membantu Anda menyelesaikan setiap kendala teknis maupun non-teknis.",
+                        },
+                        categories: [
+                            { title: "Mulai Bermain", icon: "Rocket", links: ["Instalasi Client", "Koneksi ke Server", "Membuat Akun"] },
+                            { title: "Keamanan Akun", icon: "Shield", links: ["Ganti Password", "Two-Factor Auth", "Pemulihan Akun"] },
+                            { title: "Donasi & Rank", icon: "Gem", links: ["Cara Donasi", "Benefit Rank", "Metode Pembayaran"] }
+                        ]
+                    }
+                }
+            ];
+
+            for (const page of pagesToSeed) {
+                const exists = await prisma.pageContent.findUnique({
+                    where: { slug: page.slug }
+                });
+
+                if (!exists) {
+                    console.log(`📄 Seeding page: ${page.slug}...`);
+                    await prisma.pageContent.create({
+                        data: page
+                    });
+                }
+            }
+        } catch (pageError) {
+            console.error("⚠️ Multi-Page Content initialization failed:", pageError);
+        }
+
         console.log("✅ Database ready");
     } catch (error) {
         console.error("❌ Database initialization failed:", error);
