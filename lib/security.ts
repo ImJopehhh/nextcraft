@@ -9,9 +9,9 @@ import { prisma } from "./prisma";
  */
 function calculateLockTime(count: number): number {
     if (count < 3) return 0;
-    if (count < 6) return 60; // 1 minute in seconds
-    if (count < 9) return 5 * 60; // 5 minutes
-    return 15 * 60; // 15 minutes
+    if (count < 6) return 60;
+    if (count < 9) return 5 * 60;
+    return 15 * 60;
 }
 
 /**
@@ -20,7 +20,6 @@ function calculateLockTime(count: number): number {
 export function getClientIp(request: Request): string {
     const forwarded = request.headers.get("x-forwarded-for");
     if (forwarded) {
-        // Only trust the first IP in the chain
         return forwarded.split(",")[0].trim();
     }
     return "unknown";
@@ -40,7 +39,6 @@ export async function getLoginAttempt(ip: string) {
         return { locked: false, timeLeft: 0 };
     }
 
-    // Check if still locked
     if (attempt.lockUntil && attempt.lockUntil > now) {
         const timeLeft = Math.ceil((attempt.lockUntil.getTime() - now.getTime()) / 1000);
         return { locked: true, timeLeft };
@@ -61,7 +59,6 @@ export async function recordFailedAttempt(ip: string) {
 
     let nextCount = 1;
     if (attempt) {
-        // Reset count if lock has expired
         if (attempt.lockUntil && attempt.lockUntil < now) {
             nextCount = 1;
         } else {
@@ -108,7 +105,6 @@ export function verifyCsrfToken(request: Request): boolean {
     const referer = request.headers.get("referer");
     const host = request.headers.get("host");
 
-    // Allow same-origin requests
     if (origin) {
         const originUrl = new URL(origin);
         return originUrl.host === host;
@@ -119,6 +115,5 @@ export function verifyCsrfToken(request: Request): boolean {
         return refererUrl.host === host;
     }
 
-    // If neither origin nor referer present, reject for safety
     return false;
 }

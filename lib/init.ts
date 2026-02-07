@@ -10,7 +10,6 @@ import pkg from "../package.json";
  */
 async function ensureTablesExist() {
     try {
-        // Try to query Admin table to check if it exists
         await prisma.$queryRaw`SELECT 1 FROM Admin LIMIT 1`;
     } catch (error) {
         const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -19,7 +18,6 @@ async function ensureTablesExist() {
             console.log("📦 Database tables not found. Auto-creating from schema...");
 
             try {
-                // Use Prisma db push to sync schema without migrations
                 execSync('npx prisma db push --accept-data-loss --skip-generate', {
                     stdio: 'inherit',
                     cwd: process.cwd()
@@ -54,10 +52,8 @@ export async function initializeDatabase() {
     console.log("📡 Connecting to database...");
 
     try {
-        // First, ensure all tables exist
         await ensureTablesExist();
 
-        // Then check if we need to create default admin
         const adminCount = await prisma.admin.count();
 
         if (adminCount === 0) {
@@ -81,7 +77,6 @@ export async function initializeDatabase() {
             console.log(`✅ Default Webmaster created: ${username} (${email})`);
         }
 
-        // Initialize Global Settings using raw query to bypass type errors if client not regenerated
         try {
             const settingsCheck: any[] = await prisma.$queryRaw`SELECT id FROM GlobalSettings LIMIT 1`;
             if (settingsCheck.length === 0) {
@@ -100,13 +95,11 @@ export async function initializeDatabase() {
             console.error("⚠️ Global Settings initialization check failed:", settingsError);
         }
 
-        // Initialize HomePage Content
         try {
             let tableExists = true;
             try {
                 await prisma.$queryRaw`SELECT 1 FROM HomePageContent LIMIT 1`;
             } catch (e: any) {
-                // MySQL error code 1146 means table doesn't exist
                 if (e.message?.includes("1146") || e.code === "P2010" || e.message?.includes("doesn't exist")) {
                     tableExists = false;
                 } else {
@@ -174,10 +167,8 @@ export async function initializeDatabase() {
             console.error("⚠️ Home Page Content initialization failed:", homeError);
         }
 
-        // Initialize Multi-Page Content (Server, Community, Support, Leaderboard)
         try {
             const pagesToSeed = [
-                // --- SERVER SECTION ---
                 {
                     slug: "server-status",
                     title: "Status Network",
@@ -235,8 +226,6 @@ export async function initializeDatabase() {
                         ]
                     }
                 },
-
-                // --- COMMUNITY SECTION ---
                 {
                     slug: "community-forums",
                     title: "Forum Diskusi",
@@ -288,8 +277,6 @@ export async function initializeDatabase() {
                         ]
                     }
                 },
-
-                // --- SUPPORT SECTION ---
                 {
                     slug: "support-help",
                     title: "Pusat Bantuan",
@@ -347,8 +334,6 @@ export async function initializeDatabase() {
                         ]
                     }
                 },
-
-                // --- LEADERBOARD SECTION ---
                 {
                     slug: "leaderboard-top-players",
                     title: "Pemain Terbaik",

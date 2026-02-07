@@ -9,22 +9,22 @@ interface PageHeroProps {
 }
 
 const colorMap: Record<string, string> = {
-    "&0": "text-[#000000]", // Black
-    "&1": "text-[#0000AA]", // Dark Blue
-    "&2": "text-[#00AA00]", // Dark Green
-    "&3": "text-[#00AAAA]", // Dark Aqua
-    "&4": "text-[#AA0000]", // Dark Red
-    "&5": "text-[#AA00AA]", // Dark Purple
-    "&6": "text-[#FFAA00]", // Gold
-    "&7": "text-[#AAAAAA]", // Gray
-    "&8": "text-[#555555]", // Dark Gray
-    "&9": "text-[#5555FF]", // Blue
-    "&a": "text-[#55FF55]", // Green
-    "&b": "text-[#55FFFF]", // Aqua
-    "&c": "text-[#FF5555]", // Red
-    "&d": "text-[#FF55FF]", // Light Purple
-    "&e": "text-[#FFFF55]", // Yellow
-    "&f": "text-[#FFFFFF]", // White
+    "&0": "text-[#000000]",
+    "&1": "text-[#0000AA]",
+    "&2": "text-[#00AA00]",
+    "&3": "text-[#00AAAA]",
+    "&4": "text-[#AA0000]",
+    "&5": "text-[#AA00AA]",
+    "&6": "text-[#FFAA00]",
+    "&7": "text-[#AAAAAA]",
+    "&8": "text-[#555555]",
+    "&9": "text-[#5555FF]",
+    "&a": "text-[#55FF55]",
+    "&b": "text-[#55FFFF]",
+    "&c": "text-[#FF5555]",
+    "&d": "text-[#FF55FF]",
+    "&e": "text-[#FFFF55]",
+    "&f": "text-[#FFFFFF]",
 };
 
 const parseColors = (text: string) => {
@@ -47,10 +47,8 @@ const parseColors = (text: string) => {
 export default function PageHero({ badge, title, description }: PageHeroProps) {
     return (
         <section className="relative pt-32 pb-20 overflow-hidden">
-            {/* Minecraft-themed Background Elements */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[500px] bg-blue-600/5 blur-[150px] pointer-events-none -z-10" />
 
-            {/* Decorative Floating "Blocks" */}
             <div className="absolute top-20 right-[15%] w-12 h-12 bg-white/[0.02] border border-white/5 rotate-12 backdrop-blur-sm hidden md:block" />
             <div className="absolute bottom-10 left-[10%] w-16 h-16 bg-blue-500/[0.02] border border-blue-500/5 -rotate-12 backdrop-blur-sm hidden md:block" />
 

@@ -87,7 +87,7 @@ export default function PagesManagementHub() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {catPages.map((page, i) => (
-                                    <Link key={page.id} href={`/admin/interface/pages/${page.slug}`}>
+                                    <Link key={page.id} href={`/admin/interface/${cat.id}/${page.slug}`}>
                                         <motion.div
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}

@@ -9,7 +9,9 @@
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Version](https://img.shields.io/badge/Version-1.0.0-FF4500?style=for-the-badge)](https://github.com/ImJopehhh/nextcraft)
 
-**NextCraft** is a high-performance, enterprise-ready admin dashboard and full-stack framework built with **Next.js 16**, **Prisma**, and **MySQL**. It is designed to be the ultimate foundation for developers who prioritize security, stability, and a professional-grade deployment workflow.
+**NextCraft** adalah *premium boilerplate* dan *web framework* yang dirancang untuk membangun aplikasi web modern berskala *enterprise* dengan kecepatan dan keindahan visual maksimal. Dikembangkan menggunakan **Next.js 16 App Router**, framework ini menggabungkan performa backend yang tangguh dengan estetika frontend kelas dunia.
+
+[Features](#core-features-) • [Installation](#-installation-steps) • [API Reference](#-api-reference) • [Database Setup](#-setup-database)
 
 </div>
 
@@ -140,3 +142,8 @@ sh ./scripts/update.sh
 ## 📝 License
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
+
+<div align="center">
+  <p>Built with ❤️ by <b>NextCraft Team</b></p>
+  <p><i>The Future of Rapid Web Development</i></p>
+</div>

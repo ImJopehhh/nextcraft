@@ -23,7 +23,6 @@ export async function generateMetadata() {
     const data: any[] = await prisma.$queryRaw`SELECT * FROM GlobalSettings LIMIT 1`;
     settings = data[0];
   } catch (e) {
-    // Fallback if DB not ready
   }
 
   return {
