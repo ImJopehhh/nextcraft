@@ -33,6 +33,7 @@ export const adminNavigation: NavCategory[] = [
         items: [
             { name: "Global Settings", icon: <Settings size={20} />, href: "/admin/interface/settings", roles: ["WEBMASTER"] },
             { name: "Home Page", icon: <LayoutDashboard size={20} />, href: "/admin/interface/home", roles: ["WEBMASTER", "DEVELOPER"] },
+            { name: "Pages", icon: <Monitor size={20} />, href: "/admin/interface/pages", roles: ["WEBMASTER", "DEVELOPER"] },
             {
                 name: "SEO Settings", icon: <Globe size={20} />, href: "/admin/seo", roles: ["WEBMASTER", "ADMIN"]
             },

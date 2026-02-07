@@ -15,7 +15,6 @@ export const navItems = [
         dropdown: [
             { name: "Server Status", href: "/server/status" },
             { name: "Server Rules", href: "/server/rules" },
-            { name: "Server Map", href: "/server/map" },
             { name: "Join Server", href: "/server/join" },
             { name: "Server Stats", href: "/server/stats" },
         ]
